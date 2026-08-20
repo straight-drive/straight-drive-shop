@@ -1,0 +1,11 @@
+{
+  "shippingAddress": {
+    "fullName": "Chandrashekhar Mishra",
+    "line1": "123 Test Street",
+    "city": "Bengaluru",
+    "state": "Karnataka",
+    "postalCode": "560001",
+    "country": "India",
+    "phone": "9999999999"
+  }
+}

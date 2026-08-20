@@ -1,0 +1,555 @@
+// Straight Drive — Prisma Schema
+// Database: PostgreSQL
+// Run `npx prisma migrate dev` after configuring DATABASE_URL in .env
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ──────────────────────────────────────────────
+// ENUMS
+// ──────────────────────────────────────────────
+
+enum Role {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ──────────────────────────────────────────────
+// USERS & AUTH
+// ──────────────────────────────────────────────
+
+model User {
+  id                String    @id @default(cuid())
+  name              String
+  email             String    @unique
+  company           String?
+  passwordHash      String?
+  role              Role      @default(USER)
+  avatarUrl         String?
+  phone             String?
+  isEmailVerified   Boolean   @default(false)
+  googleId          String?   @unique // reserved for future Google OAuth
+  facebookId        String?   @unique // reserved for future Facebook OAuth
+  resetOtpHash      String?
+  resetOtpExpiresAt DateTime?
+
+  emailVerificationTokens EmailVerificationToken[]
+  passwordResetTokens     PasswordResetToken[]
+  refreshTokens           RefreshToken[]
+  checkoutAttempts CheckoutAttempt[]
+
+  orders            Order[]
+  cart              Cart?
+  wishlist          Wishlist[]
+  reviews           Review[]
+  supportTickets    SupportTicket[]
+  notifications     Notification[]
+  chatConversations ChatConversation[]
+  contactMessages    ContactMessage[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+revoked   Boolean  @default(false)
+  revokedAt DateTime?
+  replacedByPair Json?
+
+  @@index([userId])
+  @@map("refresh_tokens")
+}
+
+model EmailVerificationToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("email_verification_tokens")
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("password_reset_tokens")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+// ──────────────────────────────────────────────
+// CATALOG
+// ──────────────────────────────────────────────
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  description String?
+  imageUrl    String?
+  parentId    String?
+  parent      Category? @relation("CategoryToSubcategory", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryToSubcategory")
+  products    Product[]
+
+  metaTitle       String?
+  metaDescription String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@map("categories")
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  sku         String?  @unique
+  shortDescription String?
+  description String   @db.Text
+  price       Decimal  @db.Decimal(10, 2)
+  compareAtPrice Decimal? @db.Decimal(10, 2)
+  currency    String   @default("INR")
+  stock       Int      @default(0)
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+
+ categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  tier        String?
+  productCode String?  @unique
+  hsnCode     String?
+  gstRate     Int?
+  leadTime    String?
+  heroImageUrl String?
+  features     String[] // simple string array; move to a table if features need rich metadata
+  applications String[]
+  tags         String[]
+
+  // Shopify sync (Step 7) — nullable until synced
+  shopifyProductId String? @unique
+  shopifyVariantId String?
+  shopifySyncedAt  DateTime?
+
+  media       ProductMedia[]
+  videos      ProductVideo[]
+  documents   ProductDocument[]
+  specifications ProductSpecification[]
+  reviews     Review[]
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+  wishlistedBy Wishlist[]
+  serialNumbers SerialNumber[]
+
+  relatedTo   ProductRelation[] @relation("BaseProduct")
+  relatedFrom ProductRelation[] @relation("RelatedProduct")
+
+  metaTitle       String?
+  metaDescription String?
+  canonicalUrl    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([slug])
+  @@index([categoryId])
+  @@map("products")
+}
+
+model ProductRelation {
+  id               String  @id @default(cuid())
+  productId        String
+  product          Product @relation("BaseProduct", fields: [productId], references: [id], onDelete: Cascade)
+  relatedProductId String
+  relatedProduct   Product @relation("RelatedProduct", fields: [relatedProductId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, relatedProductId])
+  @@map("product_relations")
+}
+
+model ProductSpecification {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label     String
+  value     String
+  sortOrder Int     @default(0)
+
+  @@index([productId])
+  @@map("product_specifications")
+}
+
+model ProductMedia {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  filename  String?
+  altText   String?
+  isHero    Boolean  @default(false)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([productId])
+  @@map("product_media")
+}
+
+model ProductVideo {
+  id         String  @id @default(cuid())
+  productId  String
+  product    Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title      String?
+  filename   String?
+  youtubeUrl String?
+  videoUrl   String?
+  sortOrder  Int     @default(0)
+
+  @@index([productId])
+  @@map("product_videos")
+}
+
+model ProductDocument {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  title     String
+  fileUrl   String  // Cloudinary-hosted PDF brochure/spec sheet
+  fileType  String  @default("pdf")
+
+  @@index([productId])
+  @@map("product_documents")
+}
+
+// ──────────────────────────────────────────────
+// COMMERCE
+// ──────────────────────────────────────────────
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+  createdAt DateTime   @default(now())
+
+  @@map("carts")
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int     @default(1)
+
+  @@unique([cartId, productId])
+  @@map("cart_items")
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+  @@map("wishlist_items")
+}
+
+model Order {
+  id            String      @id @default(cuid())
+  orderNumber   String      @unique
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  status        OrderStatus @default(PENDING)
+  emailLogs         EmailLog[]
+  items         OrderItem[]
+  subtotal      Decimal     @db.Decimal(10, 2)
+  tax           Decimal     @db.Decimal(10, 2) @default(0)
+  total         Decimal     @db.Decimal(10, 2)
+ currency      String      @default("INR")
+
+  // Shopify handles actual checkout/payment; we mirror the result
+  shopifyOrderId     String?
+  shopifyCheckoutUrl String?
+
+  shippingAddress Json?
+  billingAddress  Json?
+
+  customerGstin   String?
+  customerCompany String?
+
+  zohoInvoiceId     String?
+  dispatchedAt      DateTime?
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  paymentMethod     String?
+  paidAt            DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
+  serialNumbers SerialNumber[]
+
+  @@map("order_items")
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating     Int // 1–5
+  title      String?
+  comment    String?  @db.Text
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@index([productId])
+  @@map("reviews")
+}
+
+// ──────────────────────────────────────────────
+// SUPPORT / MARKETING
+// ──────────────────────────────────────────────
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  name      String
+  email     String
+  phone     String?
+  subject   String?
+  message   String   @db.Text
+  isHandled Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@map("contact_messages")
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  isActive     Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+
+  @@map("newsletter_subscribers")
+}
+
+model SupportTicket {
+  id        String       @id @default(cuid())
+  userId    String?
+  user      User?        @relation(fields: [userId], references: [id])
+  name      String
+  email     String
+  subject   String
+  message   String       @db.Text
+  status    TicketStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([userId])
+  @@map("support_tickets")
+}
+
+model BookDemoRequest {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  phone     String?
+  preferredDateTime DateTime?
+  notes     String?  @db.Text
+  createdAt DateTime @default(now())
+
+  @@map("book_demo_requests")
+}
+
+// ──────────────────────────────────────────────
+// CONTENT
+// ──────────────────────────────────────────────
+
+model BlogPost {
+  id          String     @id @default(cuid())
+  title       String
+  slug        String     @unique
+  excerpt     String?
+  content     String     @db.Text
+  coverImageUrl String?
+  status      BlogStatus @default(DRAFT)
+  authorName  String?
+
+  metaTitle       String?
+  metaDescription String?
+
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+  @@map("blog_posts")
+}
+
+// ──────────────────────────────────────────────
+// CHATBOT (Step 8)
+// ──────────────────────────────────────────────
+
+model ChatConversation {
+  id        String        @id @default(cuid())
+  userId    String?
+  user      User?         @relation(fields: [userId], references: [id])
+  sessionId String        @unique // for anonymous visitors
+  messages  ChatMessage[]
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([userId])
+  @@map("chat_conversations")
+}
+
+model ChatMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           String // "user" | "assistant"
+  content        String           @db.Text
+  createdAt      DateTime         @default(now())
+
+  @@index([conversationId])
+  @@map("chat_messages")
+}
+model SerialNumber {
+  id          String    @id @default(cuid())
+  serial      String    @unique
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
+  orderItemId String
+  orderItem   OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@index([productId])
+  @@index([orderItemId])
+  @@map("serial_numbers")
+}
+model CheckoutAttempt {
+  id              String    @id @default(cuid())
+  userId          String?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  fullName        String
+  email           String
+  phone           String?
+  customerGstin   String?
+  customerCompany String?
+  shippingAddress Json
+  billingAddress  Json?
+  cartSnapshot    Json
+  subtotal        Decimal   @db.Decimal(10, 2)
+  tax             Decimal   @db.Decimal(10, 2) @default(0)
+  total           Decimal   @db.Decimal(10, 2)
+  stage           String    @default("DETAILS_FILLED")
+  razorpayOrderId String?
+  convertedOrderId String?
+  isHandled       Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([isHandled])
+  @@map("checkout_attempts")
+}
+model EmailLog {
+  id        String   @id @default(cuid())
+  orderId   String?
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: SetNull)
+  userId    String?
+  recipient String
+  subject   String
+  type      String
+  status    String   @default("SENT")
+  error     String?
+  sentAt    DateTime @default(now())
+
+  @@index([orderId])
+  @@index([userId])
+  @@index([type])
+  @@map("email_logs")
+}

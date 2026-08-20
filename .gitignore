@@ -1,0 +1,32 @@
+# dependencies
+node_modules/
+*/node_modules/
+
+# builds
+.next/
+*/.next/
+out/
+dist/
+build/
+
+# environment — NEVER commit these
+.env
+.env.local
+.env.*.local
+*/.env
+*/.env.local
+
+# logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# uploads
+backend/uploads/
