@@ -94,7 +94,7 @@ export default function About() {
       {/* Who We Are */}
       <section className="py-20 px-6">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center mb-20">
-          <div>
+          <div className="order-1 md:order-2">
             <Eyebrow>About Us</Eyebrow>
             <h2 className="font-display text-3xl md:text-4xl font-bold text-ink mb-4">
               Who We Are?
@@ -107,10 +107,11 @@ export default function About() {
               and data to deliver engaging, reliable, and scalable experiences.
             </p>
           </div>
-          <div className="aspect-video rounded-2xl bg-navy-card border border-ink/10 overflow-hidden">
+                             <div className="aspect-video rounded-xl bg-navy-card border border-cyan/[0.16] overflow-hidden order-2 md:order-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/about/Team.jpeg"
+              
               alt="Straight Drive team at work"
               className="w-full h-full object-cover"
             />
@@ -228,7 +229,7 @@ export default function About() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 px-6">
+      <section className="py-14 sm:py-24 px-6">
         <div className="max-w-[1240px] mx-auto">
           <div className="mb-12 text-center max-w-2xl mx-auto">
             <Eyebrow>Client Testimonials</Eyebrow>

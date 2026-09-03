@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { checkoutAttemptService } from "../../../services/checkoutAttemptService";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { formatDateTime } from "../../../utils/formatDate";
 
 const STAGE_LABEL = {
   DETAILS_FILLED: "Filled details, didn't reach payment",
@@ -66,13 +67,18 @@ export default function AdminNotifications() {
                     {a.email} {a.phone ? `· ${a.phone}` : ""}
                   </p>
                 </div>
-                <span
-                  className={`shrink-0 text-[10px] font-display font-semibold uppercase tracking-wide px-2.5 py-1 rounded ${
-                    a.isHandled ? "bg-green/10 text-green" : "bg-cyan/10 text-cyan"
-                  }`}
-                >
-                  {a.isHandled ? "handled" : "pending"}
-                </span>
+                                  <div className="shrink-0 text-right">
+                    <span className="block text-muted text-[11px] font-mono mb-1.5">
+                      {formatDateTime(a.createdAt)}
+                    </span>
+                    <span
+                      className={`inline-block text-[10px] font-display font-semibold uppercase tracking-wide px-2.5 py-1 rounded ${
+                        a.isHandled ? "bg-green/10 text-green" : "bg-cyan/10 text-cyan"
+                      }`}
+                    >
+                      {a.isHandled ? "handled" : "pending"}
+                    </span>
+                  </div>
               </div>
               <p className="text-muted text-sm mb-2">
                 {STAGE_LABEL[a.stage] || a.stage}

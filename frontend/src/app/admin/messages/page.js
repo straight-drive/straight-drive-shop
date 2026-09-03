@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { contactService } from "../../../services/contactService";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { formatDateTime } from "../../../utils/formatDate";
 
 export default function AdminMessages() {
   const [messages, setMessages] = useState([]);
@@ -63,15 +64,20 @@ export default function AdminMessages() {
                     </span>
                   )}
                 </div>
-                <span
-                  className={`shrink-0 text-[10px] font-display font-semibold uppercase tracking-wide px-2.5 py-1 rounded ${
-                    m.isHandled ? "bg-green/10 text-green" : "bg-cyan/10 text-cyan"
-                  }`}
-                >
+                                  <div className="shrink-0 text-right">
+                    <span className="block text-muted text-[11px] font-mono mb-1.5">
+                      {formatDateTime(m.createdAt)}
+                    </span>
+                  <span
+                    className={`inline-block text-[10px] font-display font-semibold uppercase tracking-wide px-2.5 py-1 rounded ${
+                      m.isHandled ? "bg-green/10 text-green" : "bg-cyan/10 text-cyan"
+                    }`}
+                  >
                   {m.isHandled ? "handled" : "pending"}
-                </span>
-              </div>
-              <p className="text-muted text-sm mb-4">{m.message}</p>
+                  </span>
+                  </div>
+                </div>
+                <p className="text-muted text-sm mb-4">{m.message}</p>
               <button
                 onClick={() => toggleStatus(m.id)}
                 disabled={busyId === m.id}

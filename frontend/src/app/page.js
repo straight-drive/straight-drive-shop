@@ -158,19 +158,19 @@ export default function Home() {
       </section>
 
       {/* What's Hot */}
-      <section className="py-20 border-b border-cyan/[0.16]">
+      <section className="py-12 sm:py-20 border-b border-cyan/[0.16]">
         <div className="max-w-7xl mx-auto px-6">
           <Eyebrow>What&apos;s Hot</Eyebrow>
           <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] mt-3">
             New at <GradientText>Straight Drive.</GradientText>
           </h2>
         </div>
-        <div className="marquee-track mt-9">
-          <div className="marquee-row gap-[22px]">
-            {[...hotItems, ...hotItems].map((item, idx) => (
+        <div className="max-w-7xl mx-auto px-6 mt-9">
+          <Carousel>
+            {hotItems.map((item, idx) => (
               <div
                 key={idx}
-                className="w-[340px] flex-none bg-navy-card border border-cyan/[0.16] rounded-xl overflow-hidden"
+                className="snap-start shrink-0 w-[320px] md:w-[340px] bg-navy-card border border-cyan/[0.16] rounded-xl overflow-hidden"
               >
                 <div className="aspect-video bg-navy-deep relative overflow-hidden">
                   {item.media ? (
@@ -209,7 +209,7 @@ export default function Home() {
                 </div>
               </div>
             ))}
-          </div>
+          </Carousel>
         </div>
       </section>
 
@@ -253,7 +253,7 @@ export default function Home() {
         </section>
 
         {/* Entertainment — GREEN */}
-      <section id="entertainment" className="py-24 px-6 border-b border-cyan/[0.16] scroll-mt-24">
+      <section id="entertainment" className="py-14 sm:py-24 px-6 border-b border-cyan/[0.16] scroll-mt-24">
         <div className="max-w-[1240px] mx-auto">
           <Eyebrow color="green">For venues, malls &amp; events</Eyebrow>
           <h2 className="font-display font-bold text-ink text-[clamp(40px,6vw,72px)] mt-4">
@@ -267,7 +267,7 @@ export default function Home() {
               href="/entertainment/cricket-simulator"
               className="group relative block rounded-[14px] border border-cyan/[0.16] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-cyan/[0.55]"
             >
-             <div className="aspect-[21/9] overflow-hidden bg-navy-deep">
+             <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
                 <video
                   autoPlay
                   muted
@@ -299,7 +299,7 @@ export default function Home() {
                 <p className="text-ink/90 max-w-[44ch] text-[15.5px] mt-3">
                   Real bowling, autoscoring, big-screen gameplay.
                 </p>
-                      <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors absolute bottom-8 left-[6%]">
+                                               <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors mt-4">
                   Explore the flagship →
                 </span>
               </div>
@@ -309,7 +309,7 @@ export default function Home() {
               href="/entertainment/subgoal-soccer"
               className="group relative block rounded-[14px] border border-cyan/[0.16] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-cyan/[0.55] mt-6"
             >
-            <div className="aspect-[21/9] overflow-hidden bg-navy-deep">
+            <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
                 <video
                   autoPlay
                   muted
@@ -336,7 +336,7 @@ export default function Home() {
                   <p className="text-ink/90 max-w-[44ch] text-[15.5px] mt-3">
                   Fast, social, endlessly replayable.
                 </p>
-                <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors absolute bottom-8 left-[6%]">
+                              <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors mt-4">
                   Explore →
                 </span>
              </div>
@@ -347,7 +347,7 @@ export default function Home() {
       
 
           {/* Performance Training — CYAN */}
-      <section id="performance" className="py-24 px-6 bg-navy border-t border-cyan/[0.16] scroll-mt-24">
+      <section id="performance" className="py-14 sm:py-24 px-6 bg-navy border-t border-cyan/[0.16] scroll-mt-24">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12">
             <Eyebrow>For athletes, academies &amp; clubs</Eyebrow>
@@ -363,7 +363,7 @@ export default function Home() {
             href="/performance-training/paceattack-pro"
             className="group relative block rounded-[14px] border border-cyan/[0.16] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-cyan/[0.55] mt-12"
           >
-            <div className="aspect-[21/9] overflow-hidden bg-navy-deep">
+            <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
               <video
                 autoPlay
                 muted
@@ -391,7 +391,7 @@ export default function Home() {
               <p className="text-ink/85 max-w-[34ch] text-[14.5px] mt-2.5">
                 Up to 160 km/h, with swing and full app control.
               </p>
-              <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors absolute bottom-8 left-[6%]">
+                           <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors mt-4">
                 Explore →
               </span>
             </div>
@@ -400,9 +400,9 @@ export default function Home() {
       </section>
 
       {/* About teaser */}
-      <section className="py-24 px-6">
+      <section className="py-14 sm:py-24 px-6">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-         <div className="aspect-video rounded-xl bg-navy-card border border-cyan/[0.16] overflow-hidden">
+                   <div className="aspect-video rounded-xl bg-navy-card border border-cyan/[0.16] overflow-hidden order-2 md:order-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/about/Team.jpeg"
@@ -410,7 +410,7 @@ export default function Home() {
               className="w-full h-full object-cover"
             />
           </div>
-          <div>
+                   <div className="order-1 md:order-2">
             <Eyebrow>About Us</Eyebrow>
             <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] leading-[1.05] mb-4">
               One company, <GradientText>two engines.</GradientText>
@@ -430,7 +430,7 @@ export default function Home() {
       </section>
 
       {/* Works */}
-      <section className="py-24 px-6">
+      <section className="py-14 sm:py-24 px-6">
         <div className="max-w-7xl mx-auto">
           <Eyebrow>Our Successful Works</Eyebrow>
           <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] leading-[1.05] mb-3">
@@ -519,7 +519,7 @@ export default function Home() {
       </section>
 
       {/* Partners */}
-      <section className="py-16 px-6 bg-navy-deep/40">
+      <section className="py-10 sm:py-16 px-6 bg-navy-deep/40">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
             <Eyebrow>Our Proud Partners</Eyebrow>
@@ -532,7 +532,7 @@ export default function Home() {
       </section>
 
       {/* Contact */}
-      <section id="contact" className="py-24 px-6 bg-navy border-t border-cyan/[0.16] scroll-mt-24">
+           <section id="contact" className="py-14 sm:py-24 px-6 bg-navy border-t border-cyan/[0.16] scroll-mt-24">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12">
           <div>
             <Eyebrow>Contact</Eyebrow>

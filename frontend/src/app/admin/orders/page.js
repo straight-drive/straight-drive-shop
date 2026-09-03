@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import { orderService } from "../../../services/orderService";
 import { adminService } from "../../../services/adminService";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown } from "lucide-react";
 import ConfirmModal from "../../../components/ui/ConfirmModal";
+import { formatDateTime } from "../../../utils/formatDate";
+
 
 export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
@@ -13,6 +15,7 @@ export default function AdminOrders() {
   const [isLoading, setIsLoading] = useState(true);
   const [busyId, setBusyId] = useState(null);
   const [message, setMessage] = useState("");
+    const [expandedId, setExpandedId] = useState(null);
 
   const loadOrders = async () => {
     try {
@@ -150,17 +153,111 @@ const dispatchOrder = async () => {
                     {Number(order.total).toLocaleString("en-IN")}
                   </p>
                 </div>
-                <span
-                  className={`shrink-0 text-[10px] font-display font-semibold uppercase tracking-wide px-2.5 py-1 rounded ${
-                    order.dispatchedAt ? "bg-green/10 text-green" : "bg-cyan/10 text-cyan"
-                  }`}
-                >
-                  {order.status}
-                </span>
-              </div>
+                                  <div className="shrink-0 text-right">
+                    <span className="block text-muted text-[11px] font-mono mb-1.5">
+                      {formatDateTime(order.createdAt)}
+                    </span>
+                  <span
+                    className={`inline-block text-[10px] font-display font-semibold uppercase tracking-wide px-2.5 py-1 rounded ${
+                      order.dispatchedAt ? "bg-green/10 text-green" : "bg-cyan/10 text-cyan"
+                    }`}
+                                   >
+                      {order.status}
+                    </span>
+                  </div>
+                </div>
 
-              <div className="space-y-5">
-                {(order.items || []).map((item) => (
+                <button
+                  onClick={() => setExpandedId(expandedId === order.id ? null : order.id)}
+                  className="flex items-center gap-1.5 text-xs font-display font-semibold uppercase tracking-wide text-cyan hover:text-ink transition-colors mb-5"
+                >
+                  {expandedId === order.id ? "Hide details" : "View more"}
+                  <ChevronDown
+                    size={14}
+                    className={`transition-transform ${expandedId === order.id ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {expandedId === order.id ? (
+                  <div className="rounded-lg border border-cyan/[0.12] bg-navy-deep p-5 mb-5 grid sm:grid-cols-2 gap-5 text-[13px]">
+                    <div>
+                      <b className="block font-display uppercase tracking-[0.1em] text-[11px] text-cyan mb-2">
+                        Shipping address
+                      </b>
+                      <p className="text-ink">{order.shippingAddress?.fullName}</p>
+                      <p className="text-muted">{order.shippingAddress?.line1}</p>
+                      {order.shippingAddress?.line2 ? (
+                        <p className="text-muted">{order.shippingAddress.line2}</p>
+                      ) : null}
+                      <p className="text-muted">
+                        {order.shippingAddress?.city}, {order.shippingAddress?.state}{" "}
+                        {order.shippingAddress?.postalCode}
+                      </p>
+                      <p className="text-muted">{order.shippingAddress?.country}</p>
+                      <p className="text-muted mt-1.5">{order.shippingAddress?.phone}</p>
+                    </div>
+
+                    <div>
+                      <b className="block font-display uppercase tracking-[0.1em] text-[11px] text-cyan mb-2">
+                        Billing address
+                      </b>
+                      <p className="text-ink">{order.billingAddress?.fullName}</p>
+                      <p className="text-muted">{order.billingAddress?.line1}</p>
+                      {order.billingAddress?.line2 ? (
+                        <p className="text-muted">{order.billingAddress.line2}</p>
+                      ) : null}
+                      <p className="text-muted">
+                        {order.billingAddress?.city}, {order.billingAddress?.state}{" "}
+                        {order.billingAddress?.postalCode}
+                      </p>
+                      <p className="text-muted">{order.billingAddress?.country}</p>
+                    </div>
+
+                    {order.customerCompany || order.customerGstin ? (
+                      <div>
+                        <b className="block font-display uppercase tracking-[0.1em] text-[11px] text-cyan mb-2">
+                          Business details
+                        </b>
+                        {order.customerCompany ? (
+                          <p className="text-ink">{order.customerCompany}</p>
+                        ) : null}
+                        {order.customerGstin ? (
+                          <p className="text-muted font-mono">GSTIN {order.customerGstin}</p>
+                        ) : null}
+                      </div>
+                    ) : null}
+
+                    <div>
+                      <b className="block font-display uppercase tracking-[0.1em] text-[11px] text-cyan mb-2">
+                        Payment
+                      </b>
+                      <p className="text-muted">
+                        Method: {order.paymentMethod || "not recorded"}
+                      </p>
+                      {order.razorpayPaymentId ? (
+                        <p className="text-muted font-mono text-[12px] break-all">
+                          {order.razorpayPaymentId}
+                        </p>
+                      ) : null}
+                      {order.paidAt ? (
+                        <p className="text-muted mt-1.5">Paid {formatDateTime(order.paidAt)}</p>
+                      ) : null}
+                      {order.dispatchedAt ? (
+                        <p className="text-muted">
+                          Dispatched {formatDateTime(order.dispatchedAt)}
+                        </p>
+                      ) : null}
+                      {order.zohoInvoiceId ? (
+                        <p className="text-muted font-mono text-[12px] mt-1.5">
+                          Invoice {order.zohoInvoiceId}
+                        </p>
+                      ) : null}
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="space-y-5">
+                  {(order.items || []).map((item) => (
                   <div key={item.id} className="border-t border-cyan/[0.09] pt-4">
                     <div className="flex items-center justify-between gap-3 mb-3">
                       <div>
