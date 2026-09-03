@@ -1,8 +1,8 @@
 // src/constants/index.js
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api'
 
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api'
-
-export const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 15000
+export const API_TIMEOUT = Number(process.env.NEXT_PUBLIC_API_TIMEOUT) || 15000
 
 // localStorage keys - centralized so we never hardcode a string in two places
 export const STORAGE_KEYS = {
@@ -22,6 +22,6 @@ export const ROUTES = {
 }
 
 export const FEATURE_FLAGS = {
-  CHATBOT: import.meta.env.VITE_ENABLE_CHATBOT === 'true',
-  ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS === 'true',
+  CHATBOT: process.env.NEXT_PUBLIC_ENABLE_CHATBOT === 'true',
+  ANALYTICS: process.env.NEXT_PUBLIC_ENABLE_ANALYTICS === 'true',
 }

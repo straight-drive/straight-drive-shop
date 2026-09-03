@@ -50,7 +50,7 @@ export const catalog = [
     leadTime: "15 working days",
    desc: "Full-lane cricket simulation, real bowling, autoscoring and big-screen gameplay that anchors an entire venue.",
     purchasable: false,
-    cardPhoto: "/images/products/Cricket-sim.jpeg",
+    cardPhoto: "/images/products/Cricket-sim.jpg",
   },
     {
     key: "pixel-play",

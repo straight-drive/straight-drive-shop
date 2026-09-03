@@ -34,7 +34,7 @@ const hotItems = [
     tag: "New Venue",
     title: "Cricket Simulator at Timezone",
     desc: "Timezone Zirakpur gets its very own semi-outdoor cricket simulator — and it looks absolutely impressive! 🔥🏏",
-    media: "/images/hot/Venue.jpeg",
+    media: "/images/hot/Venue.jpg",
     type: "image",
   },
 ];
