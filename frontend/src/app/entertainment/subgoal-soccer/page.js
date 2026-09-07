@@ -9,6 +9,7 @@ import LeadTimeNote from "../../../components/ui/LeadTimeNote";
 import GradientText from "../../../components/ui/GradientText";
 import BookDemoBand from "../../../components/ui/BookDemoBand";
 import YouMightLike from "../../../components/store/YouMightLike";
+import VideoWithSound from "../../../components/ui/VideoWithSound";
 
 export const metadata = {
   title: "SubGoal Soccer — Straight Drive",
@@ -72,18 +73,7 @@ export default function SubGoalSoccer() {
             <LeadTimeNote time={catalogItem.leadTime} />
           </div>
 
-         <div className="aspect-video rounded-xl border border-cyan/[0.16] overflow-hidden relative bg-navy-deep">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src="/videos/Subgoal.mp4" type="video/mp4" />
-            </video>
-            
-          </div>
+                  <VideoWithSound src="/videos/Subgoal.mp4" />
         </div>
       </section>
 

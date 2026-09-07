@@ -9,6 +9,7 @@ import GradientText from "../../../components/ui/GradientText";
 import SpecGroup from "../../../components/ui/SpecGroup";
 import BookDemoBand from "../../../components/ui/BookDemoBand";
 import YouMightLike from "../../../components/store/YouMightLike";
+import VideoWithSound from "../../../components/ui/VideoWithSound";
 
 export const metadata = {
   title: "PaceAttack Pro — Straight Drive",

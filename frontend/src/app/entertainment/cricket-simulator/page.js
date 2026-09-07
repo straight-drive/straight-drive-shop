@@ -6,6 +6,7 @@ import BackButton from "../../../components/ui/BackButton";
 import TierBadge from "../../../components/ui/TierBadge";
 import GradientText from "../../../components/ui/GradientText";
 import YouMightLike from "../../../components/store/YouMightLike";
+import VideoWithSound from "../../../components/ui/VideoWithSound";
 import { Settings, Monitor, ClipboardList, Video, Camera, Layers, Clock, User, Target, List, Users, Trophy, Cpu, Radio, Code } from "lucide-react";
 const PART_ICONS = {
   gear: Settings,
@@ -161,17 +162,7 @@ export default function CricketSimulator() {
             </div>
           </div>
 
-        <div className="relative aspect-video rounded-xl border border-cyan/[0.16] overflow-hidden bg-navy-deep">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src="/videos/crick-sim.mp4" type="video/mp4" />
-            </video>
-          </div>
+                 <VideoWithSound src="/videos/crick-sim.mp4" />
         </div>
       </section>
 

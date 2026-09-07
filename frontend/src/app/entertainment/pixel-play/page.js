@@ -10,6 +10,7 @@ import LeadTimeNote from "../../../components/ui/LeadTimeNote";
 import GradientText from "../../../components/ui/GradientText";
 import BookDemoBand from "../../../components/ui/BookDemoBand";
 import YouMightLike from "../../../components/store/YouMightLike";
+import VideoWithSound from "../../../components/ui/VideoWithSound";
 
 export const metadata = {
   title: "Pixel Play — Straight Drive",
