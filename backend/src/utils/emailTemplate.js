@@ -35,11 +35,16 @@ export function wrapEmail({ heading, intro, bodyHtml = '', ctaLabel, ctaUrl, foo
           </table>` : ''}
         </td></tr>
 
-        <tr><td style="padding:22px 32px;border-top:1px solid ${BRAND.line}">
-          ${footerNote ? `<p style="margin:0 0 10px;font-size:12px;color:${BRAND.muted}">${footerNote}</p>` : ''}
-          <p style="margin:0;font-size:12px;line-height:1.6;color:${BRAND.muted}">
-            Straight Drive Sports &amp; Leisure Pvt. Ltd.<br>
-            info@straightdrivesport.com · +91 90009 88633
+              <tr><td style="padding:22px 32px;border-top:1px solid ${BRAND.line}">
+          ${footerNote ? `<p style="margin:0 0 16px;font-size:12px;color:${BRAND.muted}">${footerNote}</p>` : ''}
+          <p style="margin:0 0 6px;font-size:12px;color:${BRAND.muted}">Regards</p>
+          <p style="margin:0 0 10px;font-size:13px;font-weight:bold;color:${BRAND.ink}">
+            Straight Drive Sports &amp; Leisure Private Limited
+          </p>
+          <p style="margin:0;font-size:12px;line-height:1.9;color:${BRAND.muted}">
+            &#128222; +91 90009 88633<br>
+            &#128231; <a href="mailto:shop@straightdrivesport.com" style="color:${BRAND.cyan};text-decoration:none">shop@straightdrivesport.com</a><br>
+            &#127760; <a href="https://www.straightdrive.in" style="color:${BRAND.cyan};text-decoration:none">www.straightdrive.in</a>
           </p>
         </td></tr>
 
