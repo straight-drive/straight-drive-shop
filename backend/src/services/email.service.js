@@ -1,34 +1,24 @@
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 import { env } from '../config/env.js'
 
-let transporter = null
+let client = null
 
-function getTransporter() {
-  if (transporter) return transporter
-
-  if (!env.SMTP_HOST || !env.SMTP_USER || !env.SMTP_PASS) {
-    return null
-  }
-
-  transporter = nodemailer.createTransport({
-    host: env.SMTP_HOST,
-    port: env.SMTP_PORT,
-    secure: env.SMTP_PORT === 465,
-    auth: { user: env.SMTP_USER, pass: env.SMTP_PASS },
-  })
-  return transporter
+function getClient() {
+  if (client) return client
+  if (!env.RESEND_API_KEY) return null
+  client = new Resend(env.RESEND_API_KEY)
+  return client
 }
 
 /**
- * Sends an email if SMTP is configured; otherwise logs the content to
- * the console so auth flows are still testable in local development
- * without a real mail provider.
+ * Sends an email via Resend's HTTP API. Falls back to console logging
+ * when no API key is configured, so auth flows stay testable locally.
  */
 export async function sendMail({ to, subject, html, text }) {
-  const t = getTransporter()
+  const resend = getClient()
 
-  if (!t) {
-    console.log('\n📧 [DEV EMAIL - no SMTP configured] ------------------')
+  if (!resend) {
+    console.log('\n📧 [DEV EMAIL - no provider configured] ---------------')
     console.log('To:', to)
     console.log('Subject:', subject)
     console.log(text || html)
@@ -36,7 +26,19 @@ export async function sendMail({ to, subject, html, text }) {
     return { simulated: true }
   }
 
-  return t.sendMail({ from: env.EMAIL_FROM, to, subject, html, text })
+  const { data, error } = await resend.emails.send({
+    from: env.EMAIL_FROM,
+    to,
+    subject,
+    html: html || undefined,
+    text: text || undefined,
+  })
+
+  if (error) {
+    throw new Error(`Resend error: ${error.message || JSON.stringify(error)}`)
+  }
+
+  return data
 }
 
 export const emailService = {

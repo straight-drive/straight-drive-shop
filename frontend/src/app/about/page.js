@@ -10,7 +10,6 @@ export const metadata = {
     "Straight Drive Sports & Leisure Pvt. Ltd. — engineering intelligent systems for professional training and interactive entertainment.",
 };
 
-
 const expoPhotos = [
   "/images/expos/Dubai.webp",
   "/images/expos/IAAPA_Dubai.webp",
@@ -69,6 +68,12 @@ const partners = [
   { name: "Glued", logo: "/images/partners/Glued.webp" },
 ];
 
+const memberships = [
+  { name: "IAAPA", logo: "/images/memberships/IAAPA_logo.webp" },
+  { name: "IAAPI", logo: "/images/memberships/IAAPI_logo.webp" },
+  { name: "Startup India", logo: "/images/memberships/startup-india_logo.webp" },
+];
+
 export default function About() {
   return (
     <>
@@ -92,13 +97,11 @@ export default function About() {
       </section>
 
       {/* Who We Are */}
-      <section className="py-20 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center mb-20">
+      <section className="pt-12 sm:pt-20 pb-6 sm:pb-10 px-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center mb-12 sm:mb-20">
           <div className="order-1 md:order-2">
-            <Eyebrow>About Us</Eyebrow>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-ink mb-4">
-              Who We Are?
-            </h2>
+            <Eyebrow>About <GradientText>Us</GradientText></Eyebrow>
+            <p className="text-ink text-lg font-medium mb-4 mt-2">Who We Are?</p>
             <p className="text-muted leading-relaxed">
               Straight Drive Sports &amp; Leisure Pvt. Ltd. is a sports
               technology company designing and manufacturing intelligent systems
@@ -107,11 +110,10 @@ export default function About() {
               and data to deliver engaging, reliable, and scalable experiences.
             </p>
           </div>
-                             <div className="aspect-video rounded-xl bg-navy-card border border-cyan/[0.16] overflow-hidden order-2 md:order-1">
+          <div className="aspect-video rounded-xl bg-navy-card border border-cyan/[0.16] overflow-hidden order-2 md:order-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/about/Team.jpeg"
-              
               alt="Straight Drive team at work"
               className="w-full h-full object-cover"
             />
@@ -119,8 +121,8 @@ export default function About() {
         </div>
 
         {/* Vision */}
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center mb-20">
-          <div className="aspect-video rounded-2xl bg-navy-card border border-ink/10 overflow-hidden">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center mb-12 sm:mb-20">
+          <div className="aspect-video rounded-2xl bg-navy-card border border-ink/10 overflow-hidden order-2 md:order-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/vision/Just_logo.svg"
@@ -128,11 +130,11 @@ export default function About() {
               className="w-full h-full object-contain p-4"
             />
           </div>
-          <div>
-            <Eyebrow>Our Vision</Eyebrow>
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-ink mb-4">
+          <div className="order-1 md:order-2">
+            <Eyebrow>Our <GradientText>Vision</GradientText></Eyebrow>
+            <p className="text-ink text-lg font-medium mb-4 mt-2">
               Built to lead the category.
-            </h2>
+            </p>
             <p className="text-muted leading-relaxed">
               To be the world&apos;s most trusted name in sports
               technology — engineering training and entertainment systems that
@@ -142,18 +144,16 @@ export default function About() {
         </div>
 
         {/* Where We Operate */}
-        <div className="max-w-7xl mx-auto">
-         <div className="mb-10 text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-3xl md:text-4xl font-bold">
-              <GradientText>Where We Operate</GradientText>
-            </h2>
-            <p className="mt-3 text-muted text-sm">
+        <div className="max-w-7xl mx-auto mb-12 sm:mb-20">
+          <div className="mb-8 sm:mb-10 text-center max-w-2xl mx-auto">
+            <Eyebrow>Where We <GradientText>Operate</GradientText></Eyebrow>
+            <p className="mt-2 text-muted text-sm">
               A small info about our office &amp; factory.
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="rounded-2xl border border-cyan/20 bg-navy-card overflow-hidden">
-             <div className="aspect-video bg-navy-deep overflow-hidden border-b border-cyan/20">
+              <div className="aspect-video bg-navy-deep overflow-hidden border-b border-cyan/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/operate/RDLab.webp"
@@ -172,7 +172,7 @@ export default function About() {
               </div>
             </div>
             <div className="rounded-2xl border border-green/20 bg-navy-card overflow-hidden">
-             <div className="aspect-video bg-navy-deep overflow-hidden border-b border-green/20">
+              <div className="aspect-video bg-navy-deep overflow-hidden border-b border-green/20">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/operate/Factory.webp"
@@ -193,23 +193,37 @@ export default function About() {
             </div>
           </div>
         </div>
+
+        {/* Memberships */}
+        <div className="max-w-7xl mx-auto text-center">
+          <Eyebrow>Our <GradientText>Memberships</GradientText></Eyebrow>
+          <div className="flex flex-wrap items-center justify-center gap-10">
+            {memberships.map((m) => (
+              <div key={m.name} className="w-[140px] h-[70px] flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={m.logo}
+                  alt={m.name}
+                  className="max-w-full max-h-full object-contain opacity-80 hover:opacity-100 transition-opacity"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-    
-
       {/* Global Expos */}
-      <section className="py-20 px-6">
+      <section className="pt-12 sm:pt-20 pb-6 sm:pb-10 px-6">
         <div className="max-w-[1240px] mx-auto">
-          <div className="mb-12 text-center max-w-3xl mx-auto">
-            <Eyebrow>Global Presence</Eyebrow>
-            <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] mt-3">
-              Our Presence at <GradientText>Global Expos.</GradientText>
-            </h2>
-            <p className="font-display font-semibold text-[15px] tracking-[0.14em] uppercase text-muted mt-5">
+          <div className="mb-8 text-center max-w-3xl mx-auto">
+            <Eyebrow>Global <GradientText>Presence</GradientText></Eyebrow>
+            <p className="text-ink text-lg font-medium mt-2">
+              Our Presence at Global Expos.
+            </p>
+            <p className="font-display font-semibold text-[13px] tracking-[0.14em] uppercase text-muted mt-4">
               IAAPI Mumbai / IAAPI Thailand / DEAL Dubai / AAA China / Expo India
             </p>
           </div>
-
           <Carousel>
             {expoPhotos.map((photo, idx) => (
               <div
@@ -229,13 +243,13 @@ export default function About() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-14 sm:py-24 px-6">
+        <section className="pt-6 sm:pt-10 pb-6 sm:pb-10 px-6">
         <div className="max-w-[1240px] mx-auto">
-          <div className="mb-12 text-center max-w-2xl mx-auto">
-            <Eyebrow>Client Testimonials</Eyebrow>
-            <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] mt-4">
+          <div className="mb-8 text-center max-w-2xl mx-auto">
+            <Eyebrow>Client <GradientText>Testimonials</GradientText></Eyebrow>
+            <p className="text-ink text-lg font-medium mt-2">
               From the nets, and the party floor.
-            </h2>
+            </p>
           </div>
           <Carousel>
             {testimonials.map((t, idx) => (
@@ -280,10 +294,10 @@ export default function About() {
       </section>
 
       {/* Trusted Clients / Partners */}
-      <section className="py-16 px-6">
+      <section className="pt-6 sm:pt-10 pb-10 sm:pb-16 px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-10">
-            <Eyebrow>Our Trusted Clients</Eyebrow>
+          <div className="text-center mb-8 sm:mb-10">
+            <Eyebrow>Our Trusted <GradientText>Clients</GradientText></Eyebrow>
           </div>
           <Marquee items={partners} />
         </div>

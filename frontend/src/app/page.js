@@ -251,8 +251,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-
-        {/* Entertainment — GREEN */}
+      {/* Entertainment — GREEN */}
       <section id="entertainment" className="py-14 sm:py-24 px-6 border-b border-cyan/[0.16] scroll-mt-24">
         <div className="max-w-[1240px] mx-auto">
           <Eyebrow color="green">For venues, malls &amp; events</Eyebrow>
@@ -262,91 +261,87 @@ export default function Home() {
           <p className="text-muted max-w-[56ch] mt-3.5">
             Sports entertainment that keeps queues forming — anchored by our flagship.
           </p>
+
           <div className="mt-12">
             <Link
               href="/entertainment/cricket-simulator"
               className="group relative block rounded-[14px] border border-cyan/[0.16] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-cyan/[0.55]"
             >
-             <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="w-full h-full object-cover"
-                >
+              <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
+                <video autoPlay muted loop playsInline className="w-full h-full object-cover">
                   <source src="/videos/crick-sim.mp4" type="video/mp4" />
                 </video>
               </div>
+
               <div
-                className="absolute inset-0 flex flex-col justify-center px-[6%]"
+                className="absolute inset-0 flex flex-col justify-between sm:justify-center px-[6%] pt-6 pb-2 sm:py-0"
                 style={{
                   background:
-                    "linear-gradient(90deg, rgba(6,15,33,.92) 0%, rgba(6,15,33,.55) 45%, transparent 75%)",
+                    "linear-gradient(180deg, rgba(6,15,33,.75) 0%, transparent 35%, transparent 55%, rgba(6,15,33,.9) 100%)",
                 }}
               >
-                <span className="inline-block w-max font-display font-bold italic text-xs tracking-[0.24em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[3px] px-3.5 py-[5px] mb-3.5">
+                <span className="inline-block w-max font-display font-bold italic text-xs tracking-[0.24em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[3px] px-3.5 py-[5px] sm:mb-3.5">
                   Flagship
                 </span>
-                <h3 className="font-display font-bold text-ink text-[clamp(30px,4vw,52px)]">
-                  CRICKET{" "}
-                  <em className="not-italic">
-                    <GradientText>
-                      <em className="italic">SIMULATOR</em>
-                    </GradientText>
-                  </em>
-                </h3>
-                <p className="text-ink/90 max-w-[44ch] text-[15.5px] mt-3">
-                  Real bowling, autoscoring, big-screen gameplay.
-                </p>
-                                               <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors mt-4">
-                  Explore the flagship →
-                </span>
+
+                <div className="sm:pr-0">
+                  <h3 className="font-display font-bold text-ink text-[clamp(24px,4vw,52px)] leading-tight whitespace-nowrap">
+                    CRICKET{" "}
+                    <em className="not-italic">
+                      <GradientText>
+                        <em className="italic">SIMULATOR</em>
+                      </GradientText>
+                    </em>
+                  </h3>
+                  <p className="text-ink/85 text-[11px] sm:text-[14.5px] mt-0.5 sm:mt-2.5 pr-24 sm:pr-0 whitespace-nowrap">
+                    Real bowling, autoscoring, big-screen gameplay.
+                  </p>
+                  <span className="absolute bottom-2 right-[6%] sm:static sm:mt-3 sm:block font-display font-semibold uppercase tracking-[0.1em] text-[13px] sm:text-[15px] text-cyan group-hover:text-ink transition-colors">
+                    Explore →
+                  </span>
+                </div>
               </div>
             </Link>
 
-        <Link
+            <Link
               href="/entertainment/subgoal-soccer"
               className="group relative block rounded-[14px] border border-cyan/[0.16] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-cyan/[0.55] mt-6"
             >
-            <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
-                <video
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  className="w-full h-full object-cover"
-                >
+              <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
+                <video autoPlay muted loop playsInline className="w-full h-full object-cover">
                   <source src="/videos/Subgoal.mp4" type="video/mp4" />
                 </video>
               </div>
+
               <div
-                className="absolute inset-0 flex flex-col justify-center px-[6%]"
+                className="absolute inset-0 flex flex-col justify-between sm:justify-center px-[6%] pt-6 pb-2 sm:py-0"
                 style={{
                   background:
-                    "linear-gradient(90deg, rgba(6,15,33,.92) 0%, rgba(6,15,33,.55) 45%, transparent 75%)",
+                    "linear-gradient(180deg, rgba(6,15,33,.75) 0%, transparent 35%, transparent 55%, rgba(6,15,33,.9) 100%)",
                 }}
               >
-                <span className="inline-block w-max font-display font-bold italic text-xs tracking-[0.24em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[3px] px-3.5 py-[5px] mb-3.5">
+                <span className="inline-block w-max font-display font-bold italic text-xs tracking-[0.24em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[3px] px-3.5 py-[5px] sm:mb-3.5">
                   Social Game
                 </span>
-                <h3 className="font-display font-bold text-ink text-[clamp(30px,4vw,52px)]">
-                  SUBGOAL <GradientText>SOCCER</GradientText>
-                </h3>
-                  <p className="text-ink/90 max-w-[44ch] text-[15.5px] mt-3">
-                  Fast, social, endlessly replayable.
-                </p>
-                              <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors mt-4">
-                  Explore →
-                </span>
-             </div>
+
+                <div className="sm:pr-0">
+                  <h3 className="font-display font-bold text-ink text-[clamp(24px,4vw,52px)] leading-tight">
+                    SUBGOAL <GradientText>SOCCER</GradientText>
+                  </h3>
+                  <p className="text-ink/85 text-[12px] sm:text-[14.5px] mt-0.5 sm:mt-2.5 pr-24 sm:pr-0">
+                    Fast, social, endlessly replayable.
+                  </p>
+                  <span className="absolute bottom-2 right-[6%] sm:static sm:mt-3 sm:block font-display font-semibold uppercase tracking-[0.1em] text-[13px] sm:text-[15px] text-cyan group-hover:text-ink transition-colors">
+                    Explore →
+                  </span>
+                </div>
+              </div>
             </Link>
           </div>
         </div>
       </section>
-      
 
-          {/* Performance Training — CYAN */}
+      {/* Performance Training — CYAN */}
       <section id="performance" className="py-14 sm:py-24 px-6 bg-navy border-t border-cyan/[0.16] scroll-mt-24">
         <div className="max-w-7xl mx-auto">
           <div className="mb-12">
@@ -364,43 +359,40 @@ export default function Home() {
             className="group relative block rounded-[14px] border border-cyan/[0.16] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-cyan/[0.55] mt-12"
           >
             <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
-              <video
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="w-full h-full object-cover"
-              >
+              <video autoPlay muted loop playsInline className="w-full h-full object-cover">
                 <source src="/videos/paceattack.mp4" type="video/mp4" />
               </video>
             </div>
 
-            <div
-              className="absolute inset-0 flex flex-col justify-center px-[6%]"
-              style={{
-                background:
-                  "linear-gradient(90deg, rgba(6,15,33,.85) 0%, rgba(6,15,33,.3) 40%, transparent 65%)",
-              }}
-            >
-              <span className="inline-block w-max font-display font-bold italic text-xs tracking-[0.24em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[3px] px-3.5 py-[5px] mb-3.5">
-                New Launch
-              </span>
-              <h3 className="font-display font-bold text-ink text-[clamp(30px,4vw,52px)]">
-                PACEATTACK <GradientText>PRO</GradientText>
-              </h3>
-              <p className="text-ink/85 max-w-[34ch] text-[14.5px] mt-2.5">
-                Up to 160 km/h, with swing and full app control.
-              </p>
-                           <span className="font-display font-semibold uppercase tracking-[0.1em] text-[15px] text-cyan group-hover:text-ink transition-colors mt-4">
-                Explore →
-              </span>
+                          <div
+                className="absolute inset-0 flex flex-col justify-between sm:justify-center px-[6%] pt-6 pb-2 sm:py-0"
+                style={{
+                  background:
+                    "linear-gradient(180deg, rgba(6,15,33,.75) 0%, transparent 35%, transparent 55%, rgba(6,15,33,.9) 100%)",
+                }}
+              >
+                <span className="inline-block w-max font-display font-bold italic text-xs tracking-[0.24em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[3px] px-3.5 py-[5px] sm:mb-3.5">
+                  New Launch
+                </span>
+
+              <div className="sm:pr-0">
+                <h3 className="font-display font-bold text-ink text-[clamp(24px,4vw,52px)] leading-tight">
+                  PACEATTACK <GradientText>PRO</GradientText>
+                </h3>
+                <p className="text-ink/85 text-[12px] sm:text-[14.5px] mt-0.5 sm:mt-2.5 pr-24 sm:pr-0">
+                  Up to 160 km/h, with swing and full app control.
+                </p>
+                               <span className="absolute bottom-2 right-[6%] sm:static sm:mt-3 sm:block font-display font-semibold uppercase tracking-[0.1em] text-[13px] sm:text-[15px] text-cyan group-hover:text-ink transition-colors">
+                  Explore →
+                </span>
+              </div>
             </div>
           </Link>
         </div>
       </section>
 
       {/* About teaser */}
-      <section className="py-14 sm:py-24 px-6">
+     <section className="pt-14 sm:pt-24 pb-6 sm:pb-10 px-6">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                    <div className="aspect-video rounded-xl bg-navy-card border border-cyan/[0.16] overflow-hidden order-2 md:order-1">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -411,10 +403,10 @@ export default function Home() {
             />
           </div>
                    <div className="order-1 md:order-2">
-            <Eyebrow>About Us</Eyebrow>
-            <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] leading-[1.05] mb-4">
+            <Eyebrow>About <GradientText>Us</GradientText></Eyebrow>
+            <p className="text-ink text-lg font-medium mb-4">
               One company, <GradientText>two engines.</GradientText>
-            </h2>
+            </p>
             <p className="text-muted mb-6">
               Brainpower in Bengaluru, muscle in Hyderabad — our own R&amp;D lab
               and factory, ~36 people, building on one platform since 2016.
@@ -429,13 +421,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Works */}
-      <section className="py-14 sm:py-24 px-6">
+              {/* Works */}
+        <section className="pt-14 sm:pt-24 pb-6 sm:pb-10 px-6">
         <div className="max-w-7xl mx-auto">
-          <Eyebrow>Our Successful Works</Eyebrow>
-          <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] leading-[1.05] mb-3">
+                   <Eyebrow>Our Successful <GradientText>Works</GradientText></Eyebrow>
+          <p className="text-ink text-lg font-medium mb-3">
             Success stories from the field.
-          </h2>
+          </p>
           <p className="text-muted max-w-xl mb-10">
             A few of the venues running Straight Drive equipment.
           </p>
@@ -473,13 +465,13 @@ export default function Home() {
       </section>
 
     {/* Testimonials */}
-      <section className="py-24 px-6">
+       <section className="pt-6 sm:pt-10 pb-10 sm:pb-20 px-6">
         <div className="max-w-[1240px] mx-auto">
-          <div className="mb-12 text-center max-w-2xl mx-auto">
-            <Eyebrow>Client Testimonials</Eyebrow>
-            <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] mt-4">
+          <div className="mb-8 text-center max-w-2xl mx-auto">
+          <Eyebrow>Client <GradientText>Testimonials</GradientText></Eyebrow>
+            <p className="text-ink text-lg font-medium mt-2">
               From the nets, and the party floor.
-            </h2>
+            </p>
           </div>
           <Carousel>
             {testimonials.map((t, idx) => (
@@ -522,10 +514,10 @@ export default function Home() {
       <section className="py-10 sm:py-16 px-6 bg-navy-deep/40">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10">
-            <Eyebrow>Our Proud Partners</Eyebrow>
-            <h2 className="font-display font-bold text-ink text-[clamp(24px,3vw,34px)] leading-[1.05]">
+            <Eyebrow>Our Proud <GradientText>Partners</GradientText></Eyebrow>
+            <p className="text-ink text-base font-medium">
               Trusted by the best in the business.
-            </h2>
+            </p>
           </div>
          <Marquee items={partners} />
         </div>
@@ -535,10 +527,10 @@ export default function Home() {
            <section id="contact" className="py-14 sm:py-24 px-6 bg-navy border-t border-cyan/[0.16] scroll-mt-24">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-12">
           <div>
-            <Eyebrow>Contact</Eyebrow>
-            <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] leading-[1.05] mb-4">
-              Let&apos;s talk cricket.
-            </h2>
+            <Eyebrow><GradientText>Contact</GradientText></Eyebrow>
+            <p className="text-ink text-lg font-medium mb-4">
+              Let's talk cricket.
+            </p>
             <p className="text-muted mb-8">
               Tell us what you&apos;re building — a home net, an academy, or a
               full entertainment venue.

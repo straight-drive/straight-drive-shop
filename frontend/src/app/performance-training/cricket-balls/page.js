@@ -39,10 +39,10 @@ const highlights = [
 ];
 
 const ballPhotos = {
-  "cricket-balls-box-of-6_Red": "/images/cricket-balls/red-6.jpg",
+  "cricket-balls-box-of-6_Red": "/images/cricket-balls/red-6.jpeg",
   "cricket-balls-box-of-6_Yellow": "/images/cricket-balls/yellow-6.jpg",
-  "cricket-balls-box-of-12_Red": "/images/cricket-balls/red-12.jpg",
-  "cricket-balls-box-of-12_Yellow": "/images/cricket-balls/yellow-12.jpg",
+  "cricket-balls-box-of-12_Red": "/images/cricket-balls/red-12.jpeg",
+  "cricket-balls-box-of-12_Yellow": "/images/cricket-balls/yellow-12.jpeg",
 };
 
 export default function CricketBalls() {
@@ -64,12 +64,7 @@ export default function CricketBalls() {
       <section className="border-b border-cyan/[0.16]">
         <div className="max-w-[1240px] mx-auto px-6 grid md:grid-cols-[1fr_auto_1fr] gap-10 items-center py-9 pb-[60px]">
           {/* Column 1 — photo */}
-          <div
-            className="aspect-square rounded-xl border border-cyan/[0.16] flex items-center justify-center overflow-hidden"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(-45deg, rgba(255,255,255,.03) 0 12px, transparent 12px 24px),linear-gradient(160deg, #143059, #0A192F)",
-            }}
+        <div className="aspect-[4/5] max-w-[280px] mx-auto rounded-xl overflow-hidden flex items-center justify-center"
           >
             {currentPhoto ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -77,7 +72,7 @@ export default function CricketBalls() {
                 key={photoKey}
                 src={currentPhoto}
                 alt="Cricket Balls"
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             ) : (
               <span className="text-muted text-[11px] font-display font-semibold uppercase tracking-[0.2em] text-center px-6">

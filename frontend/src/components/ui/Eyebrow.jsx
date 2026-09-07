@@ -2,7 +2,7 @@
 export default function Eyebrow({ children, color = "cyan" }) {
   const colorClass = color === "green" ? "text-green" : "text-cyan";
   return (
-    <span className={`block font-display font-semibold text-[13px] tracking-[0.28em] uppercase ${colorClass}`}>
+    <span className={`block font-display font-bold text-[32px] sm:text-[40px] leading-[1.1] uppercase ${colorClass}`}>
       {children}
     </span>
   );

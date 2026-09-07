@@ -31,6 +31,7 @@ export const env = {
   SMTP_PASS: process.env.SMTP_PASS,
   EMAIL_FROM: process.env.EMAIL_FROM || 'no-reply@straightdrive.com',
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
 
   // Cloudinary (Step 16 — file uploads, ready but optional)
   CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
