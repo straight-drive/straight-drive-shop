@@ -58,9 +58,12 @@ export const authService = {
       throw new ApiError(401, 'This account uses Google sign-in. Please continue with Google.')
     }
 
-    // Same error for "no such user" and "wrong password" - don't leak which one.
-    if (!user || !(await comparePassword(password, user.passwordHash))) {
-      throw new ApiError(401, 'Invalid email or password')
+    if (!user) {
+      throw new ApiError(404, 'No account found with this email. Please sign up first.')
+    }
+
+    if (!(await comparePassword(password, user.passwordHash))) {
+      throw new ApiError(401, 'Incorrect password. Please try again.')
     }
 
     const tokens = await issueTokenPair(user)
