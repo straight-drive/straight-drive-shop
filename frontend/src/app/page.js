@@ -358,7 +358,18 @@ export default function Home() {
             href="/performance-training/paceattack-pro"
             className="group relative block rounded-[14px] border border-cyan/[0.16] overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:border-cyan/[0.55] mt-12"
           >
-                      <VideoWithSound src="/videos/paceattack.mp4" />
+                                      <div className="aspect-video rounded-xl border border-cyan/[0.16] overflow-hidden relative bg-navy-deep">
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              >
+                <source src="/videos/paceattack.mp4" type="video/mp4" />
+              </video>
+              
+            </div>
 
                           <div
                 className="absolute inset-0 flex flex-col justify-between sm:justify-center px-[6%] pt-6 pb-2 sm:py-0"

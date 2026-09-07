@@ -47,18 +47,7 @@ export default function PaceAttackPro() {
             <LeadTimeNote time={catalogItem.leadTime} />
           </div>
 
-                    <div className="aspect-video rounded-xl border border-cyan/[0.16] overflow-hidden relative bg-navy-deep">
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              <source src="/videos/paceattack.mp4" type="video/mp4" />
-            </video>
-            
-          </div>
+                      <VideoWithSound src="/videos/paceattack.mp4" />
         </div>
      </section>
 
