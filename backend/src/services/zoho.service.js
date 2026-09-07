@@ -231,5 +231,57 @@ export async function createInvoiceForOrder({ contactId, order }) {
     },
   })
 
-  return data.invoice
+  const invoice = data.invoice
+  if (!invoice?.invoice_id) return invoice
+
+  // Zoho creates invoices as drafts. Mark it sent so it becomes a
+  // properly issued invoice with a number from the series.
+  try {
+    await zohoRequest('post', `/invoices/${invoice.invoice_id}/status/sent`)
+  } catch (err) {
+    console.error('Could not mark Zoho invoice as sent:', err?.message)
+    return invoice
+  }
+
+  // The customer has already paid via Razorpay, so record the payment
+  // against the invoice — otherwise the books show a false receivable.
+  try {
+    await recordInvoicePayment(invoice, contactId, order)
+  } catch (err) {
+    console.error('Could not record payment on Zoho invoice:', err?.message)
+  }
+
+  return invoice
+}
+
+/**
+ * Records a full payment against an invoice, so it shows as PAID
+ * rather than sitting unpaid in the books.
+ */
+async function recordInvoicePayment(invoice, contactId, order) {
+  if (!env.ZOHO_PAYMENT_ACCOUNT_ID) {
+    console.warn('ZOHO_PAYMENT_ACCOUNT_ID not set — invoice left unpaid')
+    return
+  }
+
+  const amount = Number(invoice.total)
+  const paidOn = order.paidAt ? new Date(order.paidAt) : new Date()
+
+  await zohoRequest('post', '/customerpayments', {
+    data: {
+      customer_id: contactId,
+      payment_mode: 'Online Payment',
+      amount,
+      date: paidOn.toISOString().split('T')[0],
+      reference_number: order.razorpayPaymentId || order.orderNumber,
+      description: `Razorpay payment for ${order.orderNumber}`,
+      deposit_to_account_id: env.ZOHO_PAYMENT_ACCOUNT_ID,
+      invoices: [
+        {
+          invoice_id: invoice.invoice_id,
+          amount_applied: amount,
+        },
+      ],
+    },
+  })
 }

@@ -54,7 +54,7 @@ ZOHO_ORGANIZATION_ID: process.env.ZOHO_ORGANIZATION_ID,
 ZOHO_API_DOMAIN: process.env.ZOHO_API_DOMAIN || 'https://www.zohoapis.in',
 ZOHO_ACCOUNTS_DOMAIN: process.env.ZOHO_ACCOUNTS_DOMAIN || 'https://accounts.zoho.in',
 ZOHO_HOME_STATE: process.env.ZOHO_HOME_STATE || 'Telangana',
-
+  ZOHO_PAYMENT_ACCOUNT_ID: process.env.ZOHO_PAYMENT_ACCOUNT_ID,
   // OpenAI (Step 8 — chatbot, optional until connected)
   OPENAI_API_KEY: process.env.OPENAI_API_KEY,
 }
