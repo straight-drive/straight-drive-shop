@@ -39,7 +39,7 @@ export const catalog = [
       { label: "Red", hex: "#C0392B", weight: "145g" },
       { label: "Yellow", hex: "#E8B800", weight: "80g" },
     ],
-    cardPhoto: "/images/products/ball.jpeg",
+    cardPhoto: "/images/products/ball.jpg",
   },
  {
     key: "cricket-simulator",
@@ -62,7 +62,7 @@ export const catalog = [
     purchasable: false,
     desc: "The compact cricket simulator — big-screen cricket in a smaller footprint.",
     comingSoon: true,
-    cardPhoto: "/images/products/Pixel-simulator.webp",
+    cardPhoto: "/images/products/Pixel-simulator.jpg",
   },
   {
     key: "subgoal-soccer",
@@ -73,7 +73,7 @@ export const catalog = [
     leadTime: "15 working days",
     purchasable: false,
     desc: "Fast-paced tabletop football — social, competitive, endlessly replayable.",
-    cardPhoto: "/images/products/Subgoal.jpeg",
+    cardPhoto: "/images/products/Subgoal.jpg",
   },
 ];
 

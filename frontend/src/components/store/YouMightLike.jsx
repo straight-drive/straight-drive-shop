@@ -24,7 +24,7 @@ export default function YouMightLike({ currentKey }) {
                   src={p.cardPhoto}
                   alt={p.name}
                   className={`w-full h-full ${
-                    p.cardFit === "contain" ? "object-contain" : "object-cover"
+                    p.cardFit === "contain" ? "object-contain" : "object-contain"
                   }`}
                 />
               ) : (

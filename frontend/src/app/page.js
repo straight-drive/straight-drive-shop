@@ -33,7 +33,7 @@ const hotItems = [
   {
     tag: "New Venue",
     title: "Cricket Simulator at Timezone",
-    desc: "Timezone Zirakpur gets its very own semi-outdoor cricket simulator — and it looks absolutely impressive! 🔥🏏",
+    desc: "Timezone Zirakpur gets its very own semi-outdoor cricket simulator — and it looks absolutely impressive! ",
     media: "/images/hot/Venue.jpg",
     type: "image",
   },
@@ -148,7 +148,7 @@ export default function Home() {
               </a>
               
               <a  href="#performance"
-                className="inline-flex items-center px-[26px] py-[13px] rounded border border-cyan/[0.16] text-ink font-display font-semibold uppercase tracking-[0.08em] text-[15px] hover:border-cyan hover:-translate-y-0.5 transition-all"
+                className="inline-flex items-center px-[26px] py-[13px] rounded bg-navy-card border border-cyan text-cyan font-display font-semibold uppercase tracking-[0.08em] text-[15px] shadow-[0_6px_24px_rgba(0,181,223,.2)] hover:bg-navy-deep hover:-translate-y-0.5 transition-all"
               >
                 Performance Training
               </a>
@@ -196,7 +196,7 @@ export default function Home() {
                       Photo / Video
                     </div>
                   )}
-                  <span className="absolute top-2.5 left-2.5 z-10 font-display font-bold text-[10px] tracking-[0.18em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[3px] px-2.5 py-[3px]">
+                  <span className="absolute top-3 left-3 z-10 font-display font-bold text-[12px] tracking-[0.18em] uppercase bg-gradient-to-r from-cyan to-green text-navy-deep rounded-[4px] px-3.5 py-[6px]">
                     {item.tag}
                   </span>
                 </div>
