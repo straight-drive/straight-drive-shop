@@ -24,9 +24,27 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata = {
-  title: "Straight Drive — Play the Future",
+  metadataBase: new URL("https://straightdrivesports.com"),
+  title: {
+    default: "Straight Drive — Cricket Bowling Machines & Simulators",
+    template: "%s | Straight Drive",
+  },
   description:
-    "Straight Drive engineers, builds and services bowling machines and interactive games — training gear and arcade games, built to order.",
+    "Straight Drive Sports & Leisure designs and manufactures cricket bowling machines, simulators and interactive sports games. Made in India, installed across 13 countries.",
+  keywords: [
+    "cricket bowling machine",
+    "cricket simulator",
+    "cricket practice equipment",
+    "Straight Drive Sports",
+  ],
+  openGraph: {
+    type: "website",
+    siteName: "Straight Drive",
+    url: "https://straightdrivesports.com",
+    title: "Straight Drive — Cricket Bowling Machines & Simulators",
+    description:
+      "Cricket bowling machines, simulators and interactive sports games. Engineered and built in India.",
+  },
 };
 
 export default function RootLayout({ children }) {
@@ -41,6 +59,36 @@ export default function RootLayout({ children }) {
             <SiteChrome>{children}</SiteChrome>
           </CartProvider>
         </AuthProvider>
+                <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Straight Drive Sports & Leisure Pvt. Ltd.",
+              alternateName: "Straight Drive",
+              url: "https://straightdrivesports.com",
+              logo: "https://straightdrivesports.com/images/vision/hero_logo.svg",
+              description:
+                "Sports technology company designing and manufacturing cricket bowling machines, simulators and interactive entertainment systems.",
+              foundingDate: "2016",
+              email: "info@straightdrivesport.com",
+              telephone: "+91-90009-88633",
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: "Bengaluru",
+                addressRegion: "Karnataka",
+                addressCountry: "IN",
+              },
+              sameAs: [
+                "https://www.instagram.com/straightdrivesport/",
+                "https://in.linkedin.com/company/straight-drive-sports-and-leisure",
+                "https://www.youtube.com/channel/UCJukVAzctZlD1EMISFi7b6w",
+                "https://www.facebook.com/straightdrivesport/",
+              ],
+            }),
+          }}
+        />
       </body>
     </html>
   );
