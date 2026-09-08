@@ -1,7 +1,20 @@
 import { prisma } from '../config/db.js'
+import { sendContactMessageAlert } from './notification.service.js'
 
 export async function createContactMessage(data, userId) {
-  return prisma.contactMessage.create({ data: { ...data, userId: userId ?? null } })
+  const message = await prisma.contactMessage.create({
+    data: { ...data, userId: userId ?? null },
+  })
+
+  // Email the admin, but never let a mail failure lose the enquiry —
+  // it's already saved and visible in the admin panel either way.
+  try {
+    await sendContactMessageAlert(message)
+  } catch (err) {
+    console.error('Could not send contact alert email:', err?.message)
+  }
+
+  return message
 }
 
 export async function listMyMessages(userId) {

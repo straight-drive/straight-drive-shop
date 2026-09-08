@@ -159,3 +159,43 @@ export async function sendPasswordResetOtp(user, otp) {
     }),
   })
 }
+/**
+ * Alerts the admin inbox when someone submits the contact form, so
+ * enquiries are seen without anyone having to check the admin panel.
+ */
+export async function sendContactMessageAlert(message) {
+  const rows = [
+    ['Name', message.name],
+    ['Email', message.email],
+    ['Phone', message.phone || '—'],
+    ['Subject', message.subject || '—'],
+  ]
+    .map(
+      ([label, value]) => `
+      <tr>
+        <td style="padding:6px 0;font-size:13px;color:#8FA1AE;width:90px">${label}</td>
+        <td style="padding:6px 0;font-size:14px;color:#EAF2F7">${value}</td>
+      </tr>`
+    )
+    .join('')
+
+  const bodyHtml = `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 20px">
+      ${rows}
+    </table>
+    <p style="margin:0 0 6px;font-size:13px;color:#8FA1AE">Message</p>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:#EAF2F7;white-space:pre-wrap">${message.message}</p>
+  `
+
+  await deliver({
+    type: 'CONTACT_MESSAGE_ADMIN',
+    to: ADMIN_EMAIL,
+    subject: `New enquiry from ${message.name}`,
+    html: wrapEmail({
+      heading: 'New enquiry received',
+      intro: 'Someone has submitted the contact form on the website.',
+      bodyHtml,
+      footerNote: 'You can also view and manage this in the admin panel.',
+    }),
+  })
+}

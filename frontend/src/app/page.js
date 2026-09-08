@@ -134,8 +134,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-navy-deep/25 via-navy-deep/55 to-navy-deep" />
         <div className="relative z-10 h-full flex items-center justify-center">
           <div className="max-w-[900px] px-6 text-center">
-            <Eyebrow>Sports Technology · Made in India</Eyebrow>
-            <h1 className="font-display font-bold text-ink leading-[1.05] text-[clamp(46px,7vw,92px)] mt-4 mb-[18px]">
+                        <h1 className="font-display font-bold text-ink leading-[1.05] text-[clamp(46px,7vw,92px)] mb-[18px]">
               Play the <GradientText>Future.</GradientText>
             </h1>
 
