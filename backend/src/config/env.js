@@ -29,6 +29,7 @@ export const env = {
   SMTP_PORT: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587,
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
+    ADMIN_NOTIFICATION_EMAIL: process.env.ADMIN_NOTIFICATION_EMAIL || process.env.EMAIL_FROM,
   EMAIL_FROM: process.env.EMAIL_FROM || 'no-reply@straightdrive.com',
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
