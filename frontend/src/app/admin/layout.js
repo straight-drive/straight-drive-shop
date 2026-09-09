@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Mail, Package, Bell, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Mail, Package, Bell, Ticket, ArrowLeft } from "lucide-react";
 import { adminService } from "../../services/adminService";
 
 export default function AdminLayout({ children }) {
@@ -30,6 +30,7 @@ export default function AdminLayout({ children }) {
     { label: "Messages", href: "/admin/messages", icon: Mail },
     { label: "Orders", href: "/admin/orders", icon: Package },
     { label: "Alerts", href: "/admin/notifications", icon: Bell },
+    { label: "Coupons", href: "/admin/coupons", icon: Ticket },
   ];
 
   return (

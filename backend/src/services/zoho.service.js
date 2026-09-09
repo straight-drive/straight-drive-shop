@@ -222,13 +222,28 @@ export async function createInvoiceForOrder({ contactId, order }) {
   const shippingState = (order.shippingAddress?.state || '').trim().toLowerCase()
   const placeOfSupply = STATE_CODES[shippingState]
 
+  // A coupon discount must appear on the invoice, or the tax and total
+  // won't match what the customer actually paid.
+  const discount = Number(order.discountAmount || 0)
+
+  const invoicePayload = {
+    customer_id: contactId,
+    reference_number: order.orderNumber,
+    place_of_supply: placeOfSupply,
+    line_items,
+  }
+
+  if (discount > 0) {
+    invoicePayload.discount = discount
+    invoicePayload.discount_type = 'entity_level'
+    invoicePayload.is_discount_before_tax = true
+    invoicePayload.notes = order.couponCode
+      ? `Coupon applied: ${order.couponCode}`
+      : undefined
+  }
+
   const data = await zohoRequest('post', '/invoices', {
-    data: {
-      customer_id: contactId,
-      reference_number: order.orderNumber,
-      place_of_supply: placeOfSupply,
-      line_items,
-    },
+    data: invoicePayload,
   })
 
   const invoice = data.invoice

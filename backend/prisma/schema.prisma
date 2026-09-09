@@ -75,6 +75,7 @@ model User {
   notifications     Notification[]
   chatConversations ChatConversation[]
   contactMessages    ContactMessage[]
+  couponRedemptions CouponRedemption[]
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -349,6 +350,9 @@ model Order {
   razorpayPaymentId String?
   paymentMethod     String?
   paidAt            DateTime?
+    couponRedemptions CouponRedemption[]
+  couponCode        String?
+  discountAmount    Decimal? @db.Decimal(10, 2)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -528,6 +532,9 @@ model CheckoutAttempt {
   stage           String    @default("DETAILS_FILLED")
   razorpayOrderId String?
   convertedOrderId String?
+    couponId       String?
+  couponCode     String?
+  discountAmount Decimal? @db.Decimal(10, 2)
   isHandled       Boolean   @default(false)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
@@ -552,4 +559,33 @@ model EmailLog {
   @@index([userId])
   @@index([type])
   @@map("email_logs")
+}
+model Coupon {
+  id             String   @id @default(cuid())
+  code           String   @unique
+  name           String
+  discountPercent Int
+  isActive       Boolean  @default(true)
+  productIds     String[] @default([])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  redemptions CouponRedemption[]
+
+  @@map("coupons")
+}
+
+model CouponRedemption {
+  id        String   @id @default(cuid())
+  couponId  String
+  userId    String
+  orderId   String?
+  createdAt DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id])
+  order  Order? @relation(fields: [orderId], references: [id])
+
+  @@unique([couponId, userId])
+  @@map("coupon_redemptions")
 }

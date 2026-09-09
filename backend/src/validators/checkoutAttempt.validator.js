@@ -20,6 +20,7 @@ export const createAttemptSchema = z.object({
     customerCompany: z.string().optional(),
     shippingAddress: addressSchema,
     billingAddress: addressSchema.optional(),
+    couponCode: z.string().optional(),
   }),
 })
 

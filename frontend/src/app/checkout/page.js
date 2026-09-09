@@ -11,6 +11,7 @@ import BackButton from "../../components/ui/BackButton";
 import AlertModal from "../../components/ui/AlertModal";
 import LeadTimePopup from "../../components/ui/LeadTimePopup";
 import { indianStates } from "../../data/indianStates";
+import { couponService } from "../../services/couponService";
 
 export default function CheckoutPage() {
   const { user, isAuthenticated, isLoading: authLoading } = useAuth();
@@ -84,16 +85,55 @@ export default function CheckoutPage() {
   const gstinEntered = business.customerGstin.length > 0;
   const gstinValid = GSTIN_PATTERN.test(business.customerGstin);
 
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState("");
+  const [checkingCoupon, setCheckingCoupon] = useState(false);
+
   const subtotal = items.reduce(
     (sum, i) => sum + Number(i.product?.price || 0) * i.quantity,
     0
   );
 
+  const discount = appliedCoupon?.discountAmount || 0;
+
+  // GST is charged on what the customer actually pays, so each line's
+  // tax is worked out after the discount is applied to it.
   const gstTotal = items.reduce((sum, i) => {
     const line = Number(i.product?.price || 0) * i.quantity;
     const rate = i.product?.gstRate ?? 0;
-    return sum + (line * rate) / 100;
+
+    const eligibleIds = appliedCoupon?.productIds?.length
+      ? appliedCoupon.productIds
+      : null;
+    const isEligible = !eligibleIds || eligibleIds.includes(i.productId);
+
+    const lineAfterDiscount = isEligible
+      ? line * (1 - (appliedCoupon?.discountPercent ?? 0) / 100)
+      : line;
+
+    return sum + (lineAfterDiscount * rate) / 100;
   }, 0);
+
+  const applyCoupon = async () => {
+    setCouponError("");
+    setCheckingCoupon(true);
+    try {
+      const res = await couponService.validate(couponInput);
+      setAppliedCoupon(res?.data);
+    } catch (err) {
+      setAppliedCoupon(null);
+      setCouponError(err?.data?.message || "Could not apply that code");
+    } finally {
+      setCheckingCoupon(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput("");
+    setCouponError("");
+  };
 
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
@@ -109,6 +149,7 @@ export default function CheckoutPage() {
                 customerGstin: business.customerGstin || undefined,
         shippingAddress: address,
         billingAddress: sameAsShipping ? address : billing,
+        couponCode: appliedCoupon?.code,
       });
       const attempt = attemptRes?.data;
       if (!attempt?.id) throw new Error("Could not start checkout");
@@ -476,6 +517,17 @@ export default function CheckoutPage() {
                 {subtotal.toLocaleString("en-IN")}
               </span>
             </div>
+            {appliedCoupon ? (
+              <div className="flex justify-between text-sm">
+                <span className="text-green">
+                  Discount ({appliedCoupon.code} · {appliedCoupon.discountPercent}%)
+                </span>
+                <span className="text-green font-mono">
+                  −{"\u20B9"}
+                  {discount.toLocaleString("en-IN")}
+                </span>
+              </div>
+            ) : null}
             <div className="flex justify-between text-sm">
               <span className="text-muted">GST</span>
               <span className="text-ink font-mono">
@@ -487,8 +539,50 @@ export default function CheckoutPage() {
               <span className="text-ink font-display font-semibold">Total</span>
               <span className="font-mono text-xl text-ink">
                 {"\u20B9"}
-                {(subtotal + gstTotal).toLocaleString("en-IN", { maximumFractionDigits: 2 })}
+                {(subtotal - discount + gstTotal).toLocaleString("en-IN", {
+                  maximumFractionDigits: 2,
+                })}
               </span>
+            </div>
+
+            {/* Coupon */}
+            <div className="pt-4 mt-2 border-t border-cyan/[0.16]">
+              {appliedCoupon ? (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-green font-mono">
+                    {appliedCoupon.code} applied
+                  </span>
+                  <button
+                    type="button"
+                    onClick={removeCoupon}
+                    className="text-xs font-display uppercase tracking-wide text-muted hover:text-ink transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <input
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                      placeholder="Coupon code"
+                      className="flex-1 bg-navy-deep border border-cyan/[0.16] rounded-md text-ink text-sm px-3 py-2 uppercase focus:outline-none focus:border-cyan"
+                    />
+                    <button
+                      type="button"
+                      onClick={applyCoupon}
+                      disabled={checkingCoupon || !couponInput}
+                      className="px-4 py-2 rounded-md border border-cyan/[0.4] text-cyan text-xs font-display font-semibold uppercase tracking-wide hover:bg-cyan/10 transition-colors disabled:opacity-40"
+                    >
+                      {checkingCoupon ? "..." : "Apply"}
+                    </button>
+                  </div>
+                  {couponError ? (
+                    <p className="text-red-400 text-xs mt-2">{couponError}</p>
+                  ) : null}
+                </>
+              )}
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@ import { prisma } from '../config/db.js'
 import { ApiError } from '../utils/ApiError.js'
 import { createRazorpayOrder, verifyPaymentSignature, fetchPaymentDetails } from './payment.service.js'
 import { sendOrderConfirmed } from './notification.service.js'
+import { validateCoupon } from './coupon.service.js'
 
 function generateOrderNumber() {
   const date = new Date()
@@ -11,10 +12,12 @@ function generateOrderNumber() {
   const rand = Math.floor(1000 + Math.random() * 9000)
   return `SD-${y}${m}${d}-${rand}`
 }
-export async function createAttempt(userId, { fullName, email, phone, shippingAddress, billingAddress, customerGstin, customerCompany }) {  const cart = await prisma.cart.findUnique({
+export async function createAttempt(userId, { fullName, email, phone, shippingAddress, billingAddress, customerGstin, customerCompany, couponCode }) {
+  const cart = await prisma.cart.findUnique({
     where: { userId },
     include: { items: { include: { product: true } } },
   })
+
   if (!cart || cart.items.length === 0) {
     throw new ApiError(400, 'Your cart is empty')
   }
@@ -29,12 +32,40 @@ export async function createAttempt(userId, { fullName, email, phone, shippingAd
     (sum, item) => sum + Number(item.product.price) * item.quantity,
     0
   )
+
+  // A coupon discounts eligible lines before GST is worked out, because
+  // tax is legally due on the amount actually charged.
+  let coupon = null
+  let discountAmount = 0
+
+  if (couponCode) {
+    const items = cart.items.map((i) => ({
+      productId: i.productId,
+      unitPrice: i.product.price,
+      quantity: i.quantity,
+    }))
+
+    coupon = await validateCoupon({ code: couponCode, userId, items })
+    discountAmount = coupon.discountAmount
+  }
+
+  // Each line's GST is calculated on its own discounted value, since
+  // products carry different rates.
+  const eligibleIds = coupon?.productIds?.length ? coupon.productIds : null
+
   const tax = cart.items.reduce((sum, item) => {
     const lineTotal = Number(item.product.price) * item.quantity
     const rate = item.product.gstRate ?? 0
-    return sum + (lineTotal * rate) / 100
+
+    const isEligible = !eligibleIds || eligibleIds.includes(item.productId)
+    const lineAfterDiscount = isEligible
+      ? lineTotal * (1 - (coupon?.discountPercent ?? 0) / 100)
+      : lineTotal
+
+    return sum + (lineAfterDiscount * rate) / 100
   }, 0)
-  const total = subtotal + tax
+
+  const total = subtotal - discountAmount + tax
 
   const cartSnapshot = cart.items.map((item) => ({
     productId: item.productId,
@@ -57,6 +88,9 @@ export async function createAttempt(userId, { fullName, email, phone, shippingAd
       subtotal,
       tax,
       total,
+      couponId: coupon?.couponId ?? null,
+      couponCode: coupon?.code ?? null,
+      discountAmount,
       stage: 'DETAILS_FILLED',
     },
   })
@@ -106,11 +140,13 @@ export async function confirmPayment(userId, { attemptId, razorpayOrderId, razor
         total: attempt.total,
         shippingAddress: attempt.shippingAddress,
         billingAddress: attempt.billingAddress || attempt.shippingAddress,
-        customerGstin: attempt.customerGstin,
-        customerCompany: attempt.customerCompany,
-        razorpayOrderId,
-        razorpayPaymentId,
-        paidAt: new Date(),
+                  customerGstin: attempt.customerGstin,
+          customerCompany: attempt.customerCompany,
+          couponCode: attempt.couponCode,
+          discountAmount: attempt.discountAmount,
+          razorpayOrderId,
+          razorpayPaymentId,
+          paidAt: new Date(),
         items: {
           create: attempt.cartSnapshot.map((line) => ({
             productId: line.productId,
@@ -122,10 +158,22 @@ export async function confirmPayment(userId, { attemptId, razorpayOrderId, razor
       include: { items: { include: { product: true } } },
     })
 
-    const cart = await tx.cart.findUnique({ where: { userId } })
-    if (cart) {
-      await tx.cartItem.deleteMany({ where: { cartId: cart.id } })
-    }
+         // Record the coupon use now, not when it was applied — an abandoned
+      // checkout shouldn't cost the customer their one redemption.
+      if (attempt.couponId) {
+        await tx.couponRedemption.create({
+          data: {
+            couponId: attempt.couponId,
+            userId,
+            orderId: newOrder.id,
+          },
+        })
+      }
+
+      const cart = await tx.cart.findUnique({ where: { userId } })
+      if (cart) {
+        await tx.cartItem.deleteMany({ where: { cartId: cart.id } })
+      }
 
     await tx.checkoutAttempt.update({
       where: { id: attemptId },

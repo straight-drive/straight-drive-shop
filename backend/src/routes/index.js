@@ -9,6 +9,7 @@ import checkoutAttemptRoutes from './checkoutAttempt.routes.js'
 import adminRoutes from './admin.routes.js'
 import contactRoutes from './contact.routes.js'
 import reviewRoutes from './review.routes.js'
+import couponRoutes from './coupon.routes.js'
 
 const router = Router()
 
@@ -33,5 +34,6 @@ router.use('/bookings', stubRouter('Book Demo', ['/']))
 router.use('/blog', stubRouter('Blog', ['/', '/:slug']))
 router.use('/chat', stubRouter('Chatbot', ['/message']))
 router.use('/admin', adminRoutes)
+router.use('/coupons', couponRoutes)
 
 export default router
