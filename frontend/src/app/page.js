@@ -411,7 +411,7 @@ export default function Home() {
                    <div className="order-1 md:order-2">
             <Eyebrow>About <GradientText>Us</GradientText></Eyebrow>
             <p className="text-ink text-lg font-medium mb-4">
-              One company, <GradientText>two engines.</GradientText>
+              One company, <GradientText>Two engines.</GradientText>
             </p>
             <p className="text-muted mb-6">
               Brainpower in Bengaluru, muscle in Hyderabad — our own R&amp;D lab

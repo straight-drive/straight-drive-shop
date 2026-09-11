@@ -23,6 +23,7 @@ enum Role {
 
 enum OrderStatus {
   PENDING
+  AWAITING_PAYMENT
   PROCESSING
   SHIPPED
   DELIVERED
@@ -350,7 +351,9 @@ model Order {
   razorpayPaymentId String?
   paymentMethod     String?
   paidAt            DateTime?
-    couponRedemptions CouponRedemption[]
+  paymentNote       String?
+  confirmedAt       DateTime?
+  couponRedemptions CouponRedemption[]
   couponCode        String?
   discountAmount    Decimal? @db.Decimal(10, 2)
 
@@ -530,11 +533,12 @@ model CheckoutAttempt {
   tax             Decimal   @db.Decimal(10, 2) @default(0)
   total           Decimal   @db.Decimal(10, 2)
   stage           String    @default("DETAILS_FILLED")
-  razorpayOrderId String?
+  razorpayOrderId  String?
   convertedOrderId String?
-    couponId       String?
-  couponCode     String?
-  discountAmount Decimal? @db.Decimal(10, 2)
+  paymentMethod    String?
+  couponId         String?
+  couponCode       String?
+  discountAmount   Decimal? @db.Decimal(10, 2)
   isHandled       Boolean   @default(false)
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt

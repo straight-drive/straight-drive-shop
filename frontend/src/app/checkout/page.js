@@ -85,6 +85,8 @@ export default function CheckoutPage() {
   const gstinEntered = business.customerGstin.length > 0;
   const gstinValid = GSTIN_PATTERN.test(business.customerGstin);
 
+  const [paymentMethod, setPaymentMethod] = useState("RAZORPAY");
+  const [offlineConfirm, setOfflineConfirm] = useState(null);
   const [couponInput, setCouponInput] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
@@ -151,10 +153,25 @@ export default function CheckoutPage() {
         billingAddress: sameAsShipping ? address : billing,
         couponCode: appliedCoupon?.code,
       });
-      const attempt = attemptRes?.data;
-      if (!attempt?.id) throw new Error("Could not start checkout");
+              const attempt = attemptRes?.data;
+        if (!attempt?.id) throw new Error("Could not start checkout");
 
-      const payRes = await checkoutAttemptService.initiatePayment(attempt.id);
+        // Bank and international transfers create the order straight away.
+        // No money moves yet — an admin confirms it once payment arrives.
+        if (paymentMethod !== "RAZORPAY") {
+          const orderRes = await checkoutAttemptService.createOfflineOrder(
+            attempt.id,
+            paymentMethod
+          );
+          setOfflineConfirm({
+            orderNumber: orderRes?.data?.orderNumber,
+            method: paymentMethod,
+          });
+          setIsPaying(false);
+          return;
+        }
+
+        const payRes = await checkoutAttemptService.initiatePayment(attempt.id);
       const razorpayOrderId = payRes?.data?.razorpayOrderId;
       const amount = payRes?.data?.amount;
       const currency = payRes?.data?.currency;
@@ -468,13 +485,67 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <button
-              type="submit"
-              disabled={isPaying || (gstinEntered && !gstinValid)}
-              className="w-full px-6 py-3.5 rounded bg-gradient-to-r from-cyan to-green text-navy-deep font-display font-semibold uppercase tracking-wide text-sm disabled:opacity-50"
-            >
-              {isPaying ? "Processing..." : "Place Order and Pay"}
-            </button>
+                          <div className="pt-4 mt-2 border-t border-cyan/[0.16]">
+                <span className="block font-display font-semibold text-[13px] tracking-[0.14em] uppercase text-cyan mb-3">
+                  How would you like to pay?
+                </span>
+
+                <div className="space-y-3">
+                  {[
+                    {
+                      value: "RAZORPAY",
+                      title: "Pay now",
+                      desc: "Card, UPI or netbanking. Your order is confirmed immediately.",
+                    },
+                    {
+                      value: "BANK_TRANSFER",
+                      title: "Bank transfer",
+                      desc: "NEFT, RTGS or cheque. We will email you our bank details.",
+                    },
+                    {
+                      value: "INTERNATIONAL",
+                      title: "International transfer",
+                      desc: "SWIFT wire from outside India. We will email you our bank details.",
+                    },
+                  ].map((option) => (
+                    <label
+                      key={option.value}
+                      className={`flex gap-3 rounded-lg border p-4 cursor-pointer transition-colors ${
+                        paymentMethod === option.value
+                          ? "border-cyan bg-cyan/[0.06]"
+                          : "border-cyan/[0.16] hover:border-cyan/40"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="paymentMethod"
+                        value={option.value}
+                        checked={paymentMethod === option.value}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        className="w-4 h-4 mt-0.5 accent-cyan shrink-0"
+                      />
+                      <span>
+                        <b className="block font-display uppercase tracking-[0.06em] text-[14px] text-ink">
+                          {option.title}
+                        </b>
+                        <span className="text-[13px] text-muted">{option.desc}</span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isPaying || (gstinEntered && !gstinValid)}
+                className="w-full px-6 py-3.5 rounded bg-gradient-to-r from-cyan to-green text-navy-deep font-display font-semibold uppercase tracking-wide text-sm disabled:opacity-50"
+              >
+                {isPaying
+                  ? "Processing..."
+                  : paymentMethod === "RAZORPAY"
+                  ? "Place Order and Pay"
+                  : "Place Order"}
+              </button>
           </form>
         </div>
 
@@ -587,9 +658,23 @@ export default function CheckoutPage() {
           </div>
         </div>
       </section>
+                    <AlertModal
+        open={Boolean(offlineConfirm)}
+        title="We have your order"
+        message={
+          offlineConfirm
+            ? `Your order ${offlineConfirm.orderNumber} has been placed. We have emailed you our bank details along with your order summary — please complete the payment and reply to that email to let us know. We will begin production once the payment is confirmed.`
+            : ""
+        }
+        onClose={() => {
+          setOfflineConfirm(null);
+          router.push("/dashboard");
+        }}
+      />
 
       <AlertModal
         open={Boolean(alertModal)}
+      
         title={alertModal?.title}
         message={alertModal?.message}
         tone={alertModal?.tone}

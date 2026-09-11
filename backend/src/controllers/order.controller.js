@@ -54,3 +54,16 @@ export const postDispatchOrder = asyncHandler(async (req, res) => {
   const order = await orderService.dispatchOrder(req.params.id)
   ok(res, order, 200, 'Order dispatched and invoice generated')
 })
+export const postConfirmOfflinePayment = asyncHandler(async (req, res) => {
+  const order = await orderService.confirmOfflinePayment(req.params.id, {
+    note: req.body.note,
+  })
+  ok(res, order, 200, 'Payment confirmed')
+})
+
+export const postCancelUnpaid = asyncHandler(async (req, res) => {
+  const order = await orderService.cancelUnpaidOrder(req.params.id, {
+    note: req.body.note,
+  })
+  ok(res, order, 200, 'Order cancelled')
+})

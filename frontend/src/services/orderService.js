@@ -21,16 +21,30 @@ export const orderService = {
   confirmPayment(paymentData) {
     return api.post('/orders/verify-payment', paymentData)
   },
+
   listAll() {
     return api.get('/orders')
   },
+
   suggestSerials(productId, count, orderItemId) {
-    return api.get(`/orders/serials/suggest?productId=${productId}&count=${count}&orderItemId=${orderItemId}`)
+    return api.get(
+      `/orders/serials/suggest?productId=${productId}&count=${count}&orderItemId=${orderItemId}`
+    )
   },
+
   saveSerials(itemId, serials) {
     return api.put(`/orders/items/${itemId}/serials`, { serials })
   },
+
   dispatch(orderId) {
     return api.post(`/orders/${orderId}/dispatch`, {})
+  },
+
+  confirmOfflinePayment(orderId, note) {
+    return api.post(`/orders/${orderId}/confirm-payment`, { note })
+  },
+
+  cancelUnpaid(orderId, note) {
+    return api.post(`/orders/${orderId}/cancel-unpaid`, { note })
   },
 }

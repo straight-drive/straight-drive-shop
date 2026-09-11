@@ -1,7 +1,7 @@
 import { prisma } from '../config/db.js'
 import { env } from '../config/env.js'
 import { emailService, sendMail } from './email.service.js'
-import { wrapEmail, orderItemsTable } from '../utils/emailTemplate.js'
+import { wrapEmail, orderItemsTable, bankDetailsBlock } from '../utils/emailTemplate.js'
 
 const ADMIN_EMAIL = env.ADMIN_NOTIFICATION_EMAIL
 
@@ -196,6 +196,91 @@ export async function sendContactMessageAlert(message) {
       intro: 'Someone has submitted the contact form on the website.',
       bodyHtml,
       footerNote: 'You can also view and manage this in the admin panel.',
+    }),
+  })
+}
+/**
+ * Sent when a customer chooses to pay by bank transfer rather than
+ * online. Carries the full order plus the bank details they need,
+ * with the order number as the payment reference.
+ */
+export async function sendAwaitingPayment(order) {
+  const customerEmail = order.user?.email
+  const name = order.user?.name || 'there'
+  const isInternational = order.paymentMethod === 'INTERNATIONAL'
+
+  const bodyHtml = `
+    <p style="margin:0 0 6px;font-size:13px;color:#8FA1AE">Order number</p>
+    <p style="margin:0 0 18px;font-size:18px;font-weight:bold;color:#00B5DF">${order.orderNumber}</p>
+    ${orderItemsTable(order)}
+    ${bankDetailsBlock(order.paymentMethod, order.orderNumber)}
+    <p style="margin:0;font-size:14px;line-height:1.7;color:#EAF2F7">
+      Once you have made the payment, please reply to this email so we can
+      confirm it against your order. We will begin production as soon as
+      the payment is confirmed.
+    </p>
+  `
+
+  await deliver({
+    orderId: order.id,
+    userId: order.userId,
+    type: 'AWAITING_PAYMENT_CUSTOMER',
+    to: customerEmail,
+    subject: `Order received — ${order.orderNumber} — payment pending`,
+    html: wrapEmail({
+      heading: 'We have your order.',
+      intro: `Hi ${name}, thank you for your order. Please complete the payment using the details below, and reply to this email once you have done so.`,
+      bodyHtml,
+      footerNote: isInternational
+        ? 'International transfers usually take 2 to 4 working days to reach us.'
+        : 'NEFT and RTGS transfers usually reflect within one working day.',
+    }),
+  })
+
+  await deliver({
+    orderId: order.id,
+    type: 'AWAITING_PAYMENT_ADMIN',
+    to: ADMIN_EMAIL,
+    subject: `New order awaiting payment — ${order.orderNumber}`,
+    html: wrapEmail({
+      heading: 'Order placed, payment pending',
+      intro: `${name} has placed an order and chosen to pay by ${
+        isInternational ? 'international transfer' : 'bank transfer'
+      }. Confirm the payment in the admin panel once it reaches the account.`,
+      bodyHtml: `
+        <p style="margin:0 0 6px;font-size:13px;color:#8FA1AE">Order number</p>
+        <p style="margin:0 0 18px;font-size:18px;font-weight:bold;color:#00B5DF">${order.orderNumber}</p>
+        ${orderItemsTable(order)}
+      `,
+    }),
+  })
+}
+
+/**
+ * Sent once an admin confirms an offline payment has arrived.
+ */
+export async function sendPaymentConfirmed(order) {
+  const customerEmail = order.user?.email
+  const name = order.user?.name || 'there'
+
+  const bodyHtml = `
+    <p style="margin:0 0 6px;font-size:13px;color:#8FA1AE">Order number</p>
+    <p style="margin:0 0 18px;font-size:18px;font-weight:bold;color:#00B5DF">${order.orderNumber}</p>
+    ${orderItemsTable(order)}
+  `
+
+  await deliver({
+    orderId: order.id,
+    userId: order.userId,
+    type: 'PAYMENT_CONFIRMED_CUSTOMER',
+    to: customerEmail,
+    subject: `Payment received — ${order.orderNumber}`,
+    html: wrapEmail({
+      heading: 'Payment received. Your order is confirmed.',
+      intro: `Hi ${name}, we have received your payment and your order is now in production.`,
+      bodyHtml,
+      footerNote:
+        'Every product is made to order. We will email you again the moment it is dispatched.',
     }),
   })
 }

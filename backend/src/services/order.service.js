@@ -2,7 +2,7 @@ import { prisma } from '../config/db.js'
 import { ApiError } from '../utils/ApiError.js'
 import { createRazorpayOrder, verifyPaymentSignature } from './payment.service.js'
 import { findOrCreateContact, createInvoiceForOrder } from './zoho.service.js'
-import { sendOrderDispatched, sendOrderDelivered } from './notification.service.js'
+import { sendOrderDispatched, sendOrderDelivered, sendPaymentConfirmed } from './notification.service.js'
 
 function generateOrderNumber() {
   const date = new Date()
@@ -229,4 +229,57 @@ export async function dispatchOrder(orderId) {
   }
 
   return updated
+}
+/**
+ * Admin confirms an offline payment has arrived. Moves the order into
+ * production and tells the customer.
+ */
+export async function confirmOfflinePayment(orderId, { note } = {}) {
+  const order = await prisma.order.findUnique({ where: { id: orderId } })
+  if (!order) throw new ApiError(404, 'Order not found')
+
+  if (order.status !== 'AWAITING_PAYMENT') {
+    throw new ApiError(400, 'This order is not awaiting payment')
+  }
+
+  const updated = await prisma.order.update({
+    where: { id: orderId },
+    data: {
+      status: 'PROCESSING',
+      paidAt: new Date(),
+      confirmedAt: new Date(),
+      paymentNote: note || null,
+    },
+    include: { items: { include: { product: true } }, user: true },
+  })
+
+  await sendPaymentConfirmed(updated)
+
+  return updated
+}
+
+/**
+ * Admin cancels an unpaid order — typically because the customer never
+ * paid. Any coupon used is released so they can use it again.
+ */
+export async function cancelUnpaidOrder(orderId, { note } = {}) {
+  const order = await prisma.order.findUnique({ where: { id: orderId } })
+  if (!order) throw new ApiError(404, 'Order not found')
+
+  if (order.status !== 'AWAITING_PAYMENT') {
+    throw new ApiError(400, 'Only orders awaiting payment can be cancelled this way')
+  }
+
+  return prisma.$transaction(async (tx) => {
+    // Give the coupon back — it was only held while payment was pending.
+    await tx.couponRedemption.deleteMany({ where: { orderId } })
+
+    return tx.order.update({
+      where: { id: orderId },
+      data: {
+        status: 'CANCELLED',
+        paymentNote: note || null,
+      },
+    })
+  })
 }

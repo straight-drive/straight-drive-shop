@@ -87,3 +87,65 @@ export function orderItemsTable(order) {
     </tr>
   </table>`
 }
+const BANK_DETAILS = {
+  domestic: {
+    heading: 'Bank transfer details (NEFT / RTGS / Cheque)',
+    rows: [
+      ['Account name', 'Straight Drive Sports &amp; Leisure Pvt. Ltd.'],
+      ['Account number', 'YOUR_ACCOUNT_NUMBER'],
+      ['Bank', 'YOUR_BANK_NAME'],
+      ['Branch', 'YOUR_BRANCH'],
+      ['IFSC', 'YOUR_IFSC'],
+      ['Account type', 'Current'],
+    ],
+    note: 'For cheque payments, please make it payable to Straight Drive Sports &amp; Leisure Pvt. Ltd.',
+  },
+  international: {
+    heading: 'International transfer details (SWIFT)',
+    rows: [
+      ['Beneficiary', 'Straight Drive Sports &amp; Leisure Pvt. Ltd.'],
+      ['Account number', 'YOUR_ACCOUNT_NUMBER'],
+      ['Bank', 'YOUR_BANK_NAME'],
+      ['Bank address', 'YOUR_BANK_ADDRESS'],
+      ['SWIFT / BIC', 'YOUR_SWIFT_CODE'],
+      ['IFSC', 'YOUR_IFSC'],
+    ],
+    note: 'Please ensure all intermediary bank charges are borne by the sender, so the full invoice amount reaches us.',
+  },
+}
+
+/**
+ * Renders the bank details block for offline payment emails. The
+ * order number must be used as the payment reference so we can match
+ * an incoming transfer to the right order.
+ */
+export function bankDetailsBlock(method, orderNumber) {
+  const details = method === 'INTERNATIONAL' ? BANK_DETAILS.international : BANK_DETAILS.domestic
+
+  const rows = details.rows
+    .map(
+      ([label, value]) => `
+      <tr>
+        <td style="padding:7px 0;font-size:13px;color:${BRAND.muted};width:140px">${label}</td>
+        <td style="padding:7px 0;font-size:14px;color:${BRAND.ink}">${value}</td>
+      </tr>`
+    )
+    .join('')
+
+  return `
+  <div style="border:1px solid ${BRAND.line};border-radius:10px;padding:20px;margin:26px 0">
+    <p style="margin:0 0 14px;font-size:14px;font-weight:bold;color:${BRAND.cyan}">
+      ${details.heading}
+    </p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+      ${rows}
+      <tr>
+        <td style="padding:7px 0;font-size:13px;color:${BRAND.muted}">Payment reference</td>
+        <td style="padding:7px 0;font-size:14px;font-weight:bold;color:${BRAND.green}">${orderNumber}</td>
+      </tr>
+    </table>
+    <p style="margin:16px 0 0;font-size:12px;line-height:1.6;color:${BRAND.muted}">
+      ${details.note}
+    </p>
+  </div>`
+}

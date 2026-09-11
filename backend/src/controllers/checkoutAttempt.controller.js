@@ -27,3 +27,10 @@ export const putAttemptHandled = asyncHandler(async (req, res) => {
   const attempt = await attemptService.toggleHandled(req.params.id)
   ok(res, attempt, 200, 'Updated')
 })
+export const postOfflineOrder = asyncHandler(async (req, res) => {
+  const order = await attemptService.createOfflineOrder(req.user.id, {
+    attemptId: req.params.id,
+    paymentMethod: req.body.paymentMethod,
+  })
+  created(res, order, 'Order placed — awaiting payment')
+})

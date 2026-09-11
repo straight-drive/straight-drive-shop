@@ -1,7 +1,7 @@
 import { prisma } from '../config/db.js'
 import { ApiError } from '../utils/ApiError.js'
 import { createRazorpayOrder, verifyPaymentSignature, fetchPaymentDetails } from './payment.service.js'
-import { sendOrderConfirmed } from './notification.service.js'
+import { sendOrderConfirmed, sendAwaitingPayment } from './notification.service.js'
 import { validateCoupon } from './coupon.service.js'
 
 function generateOrderNumber() {
@@ -221,4 +221,76 @@ export async function toggleHandled(id) {
     where: { id },
     data: { isHandled: !attempt.isHandled },
   })
+}
+/**
+ * Creates an order for a customer paying offline — bank transfer or
+ * international wire. No payment has been taken, so the order sits at
+ * AWAITING_PAYMENT until an admin confirms the money has arrived.
+ *
+ * The coupon is redeemed now rather than on confirmation, so someone
+ * cannot place several unpaid orders all claiming the same discount.
+ * Rejecting the order releases it again.
+ */
+export async function createOfflineOrder(userId, { attemptId, paymentMethod }) {
+  if (!['BANK_TRANSFER', 'INTERNATIONAL'].includes(paymentMethod)) {
+    throw new ApiError(400, 'Unknown payment method')
+  }
+
+  const attempt = await prisma.checkoutAttempt.findFirst({ where: { id: attemptId, userId } })
+  if (!attempt) throw new ApiError(404, 'Checkout attempt not found')
+  if (attempt.stage === 'COMPLETED') throw new ApiError(400, 'This checkout is already complete')
+
+  const order = await prisma.$transaction(async (tx) => {
+    const newOrder = await tx.order.create({
+      data: {
+        orderNumber: generateOrderNumber(),
+        userId,
+        status: 'AWAITING_PAYMENT',
+        subtotal: attempt.subtotal,
+        tax: attempt.tax,
+        total: attempt.total,
+        shippingAddress: attempt.shippingAddress,
+        billingAddress: attempt.billingAddress || attempt.shippingAddress,
+        customerGstin: attempt.customerGstin,
+        customerCompany: attempt.customerCompany,
+        couponCode: attempt.couponCode,
+        discountAmount: attempt.discountAmount,
+        paymentMethod,
+        items: {
+          create: attempt.cartSnapshot.map((line) => ({
+            productId: line.productId,
+            quantity: line.quantity,
+            unitPrice: line.unitPrice,
+          })),
+        },
+      },
+      include: { items: { include: { product: true } }, user: true },
+    })
+
+    if (attempt.couponId) {
+      await tx.couponRedemption.create({
+        data: { couponId: attempt.couponId, userId, orderId: newOrder.id },
+      })
+    }
+
+    const cart = await tx.cart.findUnique({ where: { userId } })
+    if (cart) {
+      await tx.cartItem.deleteMany({ where: { cartId: cart.id } })
+    }
+
+    await tx.checkoutAttempt.update({
+      where: { id: attempt.id },
+      data: {
+        stage: 'COMPLETED',
+        convertedOrderId: newOrder.id,
+        paymentMethod,
+      },
+    })
+
+    return newOrder
+  })
+
+  await sendAwaitingPayment(order)
+
+  return order
 }

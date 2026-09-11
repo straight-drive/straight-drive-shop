@@ -78,6 +78,8 @@ export default function AdminOrders() {
   };
  const [confirmDeliverId, setConfirmDeliverId] = useState(null);
   const [confirmDispatchId, setConfirmDispatchId] = useState(null);
+  const [confirmPaymentId, setConfirmPaymentId] = useState(null);
+  const [confirmCancelId, setConfirmCancelId] = useState(null);
 
   const markDelivered = async () => {
     const orderId = confirmDeliverId;
@@ -107,6 +109,33 @@ const dispatchOrder = async () => {
     } finally {
       setBusyId(null);
       setConfirmDispatchId(null);
+    }
+  };
+    const confirmPayment = async () => {
+    setBusyId(confirmPaymentId);
+    setMessage("");
+    try {
+      await orderService.confirmOfflinePayment(confirmPaymentId);
+      setConfirmPaymentId(null);
+      loadOrders();
+    } catch (err) {
+      setMessage(err?.data?.message || "Could not confirm payment");
+    } finally {
+      setBusyId(null);
+    }
+  };
+
+  const cancelOrder = async () => {
+    setBusyId(confirmCancelId);
+    setMessage("");
+    try {
+      await orderService.cancelUnpaid(confirmCancelId);
+      setConfirmCancelId(null);
+      loadOrders();
+    } catch (err) {
+      setMessage(err?.data?.message || "Could not cancel order");
+    } finally {
+      setBusyId(null);
     }
   };
 
@@ -304,9 +333,35 @@ const dispatchOrder = async () => {
                 ))}
               </div>
 
-             {!order.dispatchedAt ? (
-               <button
-                  onClick={() => setConfirmDispatchId(order.id)}
+                           {order.status === "AWAITING_PAYMENT" ? (
+                 <div className="mt-5">
+                   <p className="text-xs text-muted mb-3">
+                     Paying by{" "}
+                     {order.paymentMethod === "INTERNATIONAL"
+                       ? "international transfer"
+                       : "bank transfer"}
+                     . Confirm once the payment reaches the account.
+                   </p>
+                   <div className="flex gap-3 flex-wrap">
+                     <button
+                       onClick={() => setConfirmPaymentId(order.id)}
+                       disabled={busyId === order.id}
+                       className="px-4 py-2 rounded-lg bg-gradient-to-r from-cyan to-green text-navy-deep text-xs font-display font-semibold uppercase tracking-wide disabled:opacity-40"
+                     >
+                       Confirm Payment
+                     </button>
+                     <button
+                       onClick={() => setConfirmCancelId(order.id)}
+                       disabled={busyId === order.id}
+                       className="px-4 py-2 rounded-lg border border-red-500/40 text-red-400 text-xs font-display font-semibold uppercase tracking-wide hover:bg-red-500/10 transition-colors disabled:opacity-40"
+                     >
+                       Cancel Order
+                     </button>
+                   </div>
+                 </div>
+               ) : !order.dispatchedAt ? (
+                 <button
+                    onClick={() => setConfirmDispatchId(order.id)}
                   disabled={busyId === order.id || !allSerialsSaved(order)}
                   className="mt-5 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan to-green text-navy-deep text-xs font-display font-semibold uppercase tracking-wide disabled:opacity-40"
                 >
@@ -346,9 +401,28 @@ const dispatchOrder = async () => {
         onCancel={() => setConfirmDeliverId(null)}
         busy={busyId === confirmDeliverId}
       />
+              <ConfirmModal
+          open={Boolean(confirmPaymentId)}
+          title="Confirm payment received?"
+          message="This marks the order as paid and moves it into production. The customer will be emailed."
+          confirmLabel="Confirm Payment"
+          onConfirm={confirmPayment}
+          onCancel={() => setConfirmPaymentId(null)}
+          busy={busyId === confirmPaymentId}
+        />
 
-      <ConfirmModal
-        open={Boolean(confirmDispatchId)}
+        <ConfirmModal
+          open={Boolean(confirmCancelId)}
+          title="Cancel this order?"
+          message="The order will be cancelled and any coupon used will be returned to the customer."
+          confirmLabel="Cancel Order"
+          onConfirm={cancelOrder}
+          onCancel={() => setConfirmCancelId(null)}
+          busy={busyId === confirmCancelId}
+        />
+
+        <ConfirmModal
+          open={Boolean(confirmDispatchId)}
         title="Mark as dispatched?"
         message="This generates the Zoho invoice and cannot be undone. Make sure all serial numbers are correct."
         confirmLabel="Mark Dispatched"

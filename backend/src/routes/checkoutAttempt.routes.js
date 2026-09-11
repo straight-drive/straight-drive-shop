@@ -8,6 +8,7 @@ import {
   postAttemptConfirm,
   getAbandonedAttempts,
   putAttemptHandled,
+  postOfflineOrder,
 } from '../controllers/checkoutAttempt.controller.js'
 
 const router = Router()
@@ -19,5 +20,5 @@ router.post('/verify-payment', validate(verifyAttemptPaymentSchema), postAttempt
 
 router.get('/abandoned', authorize('ADMIN', 'SUPER_ADMIN'), getAbandonedAttempts)
 router.put('/:id/handled', authorize('ADMIN', 'SUPER_ADMIN'), putAttemptHandled)
-
+router.post('/:id/offline-order', postOfflineOrder)
 export default router

@@ -14,6 +14,8 @@ import {
   getSuggestedSerials,
   putOrderItemSerials,
   postDispatchOrder,
+  postConfirmOfflinePayment,
+  postCancelUnpaid,
 } from '../controllers/order.controller.js'
 
 const router = Router()
@@ -27,11 +29,14 @@ router.get('/my/:id', getMyOrder)
 router.post('/:id/pay', postInitiatePayment)
 router.post('/verify-payment', validate(verifyPaymentSchema), postConfirmPayment)
 
+
 // Admin-only see and manage all orders
 router.get('/', authorize('ADMIN', 'SUPER_ADMIN'), getAllOrders)
 router.put('/:id/status', authorize('ADMIN', 'SUPER_ADMIN'), validate(updateOrderStatusSchema), putOrderStatus)
 router.get('/serials/suggest', authorize('ADMIN', 'SUPER_ADMIN'), getSuggestedSerials)
 router.put('/items/:itemId/serials', authorize('ADMIN', 'SUPER_ADMIN'), putOrderItemSerials)
 router.post('/:id/dispatch', authorize('ADMIN', 'SUPER_ADMIN'), postDispatchOrder)
+router.post('/:id/confirm-payment', authorize('ADMIN', 'SUPER_ADMIN'), postConfirmOfflinePayment)
+router.post('/:id/cancel-unpaid', authorize('ADMIN', 'SUPER_ADMIN'), postCancelUnpaid)
 
 export default router

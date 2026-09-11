@@ -16,4 +16,8 @@ export const checkoutAttemptService = {
   toggleHandled(id) {
     return api.put(`/checkout-attempts/${id}/handled`, {})
   },
+
+   createOfflineOrder(attemptId, paymentMethod) {
+    return api.post(`/checkout-attempts/${attemptId}/offline-order`, { paymentMethod })
+  },
 }
