@@ -28,7 +28,7 @@ export default function Entertainment() {
 
       <section className="pt-16 pb-6 px-6">
         <div className="max-w-[1240px] mx-auto">
-          <Eyebrow color="green">For venues, malls &amp; events</Eyebrow>
+          <Eyebrow color="green">For FECs, Malls and Events</Eyebrow>
           <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] mt-3">
             Products.
           </h2>

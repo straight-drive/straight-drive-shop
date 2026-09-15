@@ -12,14 +12,14 @@ const hotItems = [
   {
     tag: "New Launch",
     title: "PaceAttack Pro",
-    desc: "PaceAttack Pro is in market now !!",
+    desc: "The Future of Cricket Bowling Machines. Smart Features Never Seen Before",
     media: getByKey("paceattack-pro")?.cardPhoto,
     type: "image",
   },
   {
     tag: "Coming Soon",
     title: "Twister",
-    desc: "Dedicated spin machine, launching this year.",
+    desc: "Advanced Spin and Seam Bowling with video replay app.",
     media: getByKey("twister")?.cardPhoto,
     type: "image",
   },
@@ -33,7 +33,7 @@ const hotItems = [
   {
     tag: "New Venue",
     title: "Cricket Simulator at Timezone",
-    desc: "Timezone Zirakpur gets its very own semi-outdoor cricket simulator — and it looks absolutely impressive! ",
+    desc: "Timezone Zirakpur gets its very own semi-outdoor cricket simulator, and it looks absolutely impressive! ",
     media: "/images/hot/Venue.jpg",
     type: "image",
   },
@@ -159,10 +159,7 @@ export default function Home() {
       {/* What's Hot */}
       <section className="py-12 sm:py-20 border-b border-cyan/[0.16]">
         <div className="max-w-7xl mx-auto px-6">
-          <Eyebrow>What&apos;s Hot</Eyebrow>
-          <h2 className="font-display font-bold text-ink text-[clamp(28px,3.6vw,40px)] mt-3">
-            New at <GradientText>Straight Drive.</GradientText>
-          </h2>
+       <Eyebrow>What&apos;s new at <GradientText>Straight Drive?</GradientText></Eyebrow>
         </div>
         <div className="max-w-7xl mx-auto px-6 mt-9">
           <Carousel>
@@ -253,7 +250,7 @@ export default function Home() {
       {/* Entertainment — GREEN */}
       <section id="entertainment" className="py-14 sm:py-24 px-6 border-b border-cyan/[0.16] scroll-mt-24">
         <div className="max-w-[1240px] mx-auto">
-          <Eyebrow color="green">For venues, malls &amp; events</Eyebrow>
+          <Eyebrow color="green">For FECs, Malls and Events</Eyebrow>
           <h2 className="font-display font-bold text-ink text-[clamp(40px,6vw,72px)] mt-4">
             Entertain<GradientText>ment.</GradientText>
           </h2>
@@ -349,7 +346,7 @@ export default function Home() {
               Performance <GradientText>Training.</GradientText>
             </h2>
             <p className="text-muted max-w-[56ch] mt-3.5">
-              Serious practice equipment, engineered and built by us.
+              Cricket bowling machine, engineered and built by us.
             </p>
           </div>
 

@@ -7,7 +7,6 @@ import TierBadge from "../../../components/ui/TierBadge";
 import LeadTimeNote from "../../../components/ui/LeadTimeNote";
 import BuyPanel from "../../../components/store/BuyPanel";
 import BallVariantSelector from "../../../components/store/BallVariantSelector";
-import BookDemoBand from "../../../components/ui/BookDemoBand";
 import GradientText from "../../../components/ui/GradientText";
 import YouMightLike from "../../../components/store/YouMightLike";
 
@@ -140,7 +139,7 @@ export default function CricketBalls() {
           </div>
         </div>
       </section>
-    <BookDemoBand />
+
       <YouMightLike currentKey="cricket-balls" />
     </>
   );
