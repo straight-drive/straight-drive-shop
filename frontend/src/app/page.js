@@ -265,7 +265,7 @@ export default function Home() {
             >
               <div className="aspect-[4/3] sm:aspect-[21/9] overflow-hidden bg-navy-deep">
                 <video autoPlay muted loop playsInline className="w-full h-full object-cover">
-                  <source src="/videos/crick-sim.mp4" type="video/mp4" />
+                  <source src="/videos/hero.mp4" type="video/mp4" />
                 </video>
               </div>
 

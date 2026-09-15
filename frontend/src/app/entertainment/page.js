@@ -16,7 +16,7 @@ export default function Entertainment() {
     <>
       <section className="relative h-[320px] md:h-[380px] overflow-hidden">
                 <video autoPlay muted loop playsInline className="absolute inset-0 w-full h-full object-cover">
-          <source src="/videos/hero.mp4" type="video/mp4" />
+          <source src="/videos/about-hero.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-to-t from-navy-deep via-navy-deep/60 to-navy-deep/30" />
         <div className="relative z-10 h-full flex items-center justify-center">

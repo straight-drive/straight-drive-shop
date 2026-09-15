@@ -162,7 +162,7 @@ export default function CricketSimulator() {
             </div>
           </div>
 
-                 <VideoWithSound src="/videos/crick-sim.mp4" />
+                 <VideoWithSound src="/videos/hero.mp4" />
         </div>
       </section>
 
